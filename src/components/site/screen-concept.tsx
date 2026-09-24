@@ -272,13 +272,13 @@ export function ScreenConcept({
       role="img"
       aria-label={`Abstract ${segmentLabel.toLowerCase()} app concept for ${journeyLabel.toLowerCase()}. Illustrative, not an actual app design.`}
       className={cn(
-        "relative isolate flex aspect-[4/3.6] w-full items-center justify-center overflow-hidden rounded-[var(--radius-card)] bg-seg-soft",
+        "relative isolate flex aspect-[4/3.6] w-full items-center justify-center overflow-hidden rounded-[var(--radius-card)] bg-seg-soft dark:bg-surface",
         className,
       )}
     >
       <div aria-hidden="true" className="absolute inset-0 -z-10">
         <span className="absolute -top-1/4 -right-1/4 size-[80%] rounded-full bg-seg/25 blur-3xl" />
-        <span className="absolute -bottom-1/3 -left-1/4 size-[70%] rounded-full bg-white/60 blur-3xl" />
+        <span className="absolute -bottom-1/3 -left-1/4 size-[70%] rounded-full bg-white/60 blur-3xl dark:bg-white/5" />
       </div>
       <span className="absolute top-4 left-4 rounded-[var(--radius-btn)] bg-white/70 px-2 py-1 text-[10px] font-semibold tracking-[0.08em] text-navy/70 uppercase backdrop-blur">
         App concept

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { SERVICE_ORDER, demos, segments, services } from "@/lib/content";
+import { SERVICE_ORDER, demos, segments, serviceCtaName, services } from "@/lib/content";
 import { cn } from "@/lib/utils";
 import { useSite } from "./site-context";
 import { Chevron, Eyebrow, Panel, Reveal, TextAction, extraIcons, serviceIcons } from "./primitives";
@@ -42,7 +42,7 @@ export function ServicesBento() {
                 <h3 className="mt-2 text-[24px] leading-tight font-semibold">{svc.title}</h3>
                 <p className="mt-3 flex-1 text-[15px] leading-relaxed text-fg-muted">{svc.description}</p>
                 <TextAction className="mt-7 self-start" onClick={() => openDialog({ type: "service", key })}>
-                  Explore {svc.short.toLowerCase()}
+                  Explore {serviceCtaName(key)}
                 </TextAction>
               </div>
             </Reveal>
@@ -61,7 +61,7 @@ export function ServicesBento() {
                 View all services
               </TextAction>
             </div>
-            <ul className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+            <ul className="grid content-start grid-cols-2 gap-2.5 sm:grid-cols-3">
               {SERVICE_ORDER.map((key) => {
                 const Icon = serviceIcons[key];
                 const planned = services[key].planned;
@@ -71,7 +71,7 @@ export function ServicesBento() {
                       type="button"
                       onClick={() => openDialog({ type: "service", key })}
                       className={cn(
-                        "group flex h-full w-full flex-col items-start gap-5 rounded-2xl p-3.5 text-left transition-colors",
+                        "group flex h-full min-h-[112px] w-full flex-col items-start gap-5 rounded-2xl p-3.5 text-left transition-colors",
                         planned ? "border border-dashed border-hairline" : "bg-page hover:bg-seg-soft hover:text-navy",
                       )}
                     >

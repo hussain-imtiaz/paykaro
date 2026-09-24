@@ -40,6 +40,7 @@ interface SiteContextValue {
   demo: DemoKey;
   setDemo: (key: DemoKey) => void;
   showDemo: (key: DemoKey) => void;
+  resolveDialogFocus: () => boolean;
 }
 
 const SiteContext = createContext<SiteContextValue | null>(null);
@@ -123,22 +124,50 @@ export function SiteProvider({ initialSegment, children }: { initialSegment: Seg
   const openDialog = useCallback((d: Exclude<DialogState, null>) => setDialog(d), []);
   const closeDialog = useCallback(() => setDialog(null), []);
 
+  const pendingDemoFocus = useRef<DemoKey | null>(null);
+
+  const revealDemo = useCallback((key: DemoKey) => {
+    document.getElementById("demo")?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
+    document.getElementById(`demo-tab-${key}`)?.focus({ preventScroll: true });
+  }, []);
+
   const showDemo = useCallback(
     (key: DemoKey) => {
       setDemo(key);
-      setDialog(null);
-      requestAnimationFrame(() => {
-        const el = document.getElementById("demo");
-        el?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
-        document.getElementById(`demo-tab-${key}`)?.focus({ preventScroll: true });
-      });
+      if (dialog) {
+        // The dialog restores focus and releases its scroll lock on close, so reveal the demo afterwards.
+        pendingDemoFocus.current = key;
+        setDialog(null);
+      } else {
+        requestAnimationFrame(() => revealDemo(key));
+      }
     },
-    [setDemo],
+    [setDemo, dialog, revealDemo],
   );
 
+  /** Called by the dialog when choosing where focus goes on close. */
+  const resolveDialogFocus = useCallback(() => {
+    const key = pendingDemoFocus.current;
+    pendingDemoFocus.current = null;
+    if (!key) return true;
+    requestAnimationFrame(() => revealDemo(key));
+    return false;
+  }, [revealDemo]);
+
   const value = useMemo(
-    () => ({ segment, navigate, scrollToSection, dialog, openDialog, closeDialog, demo, setDemo, showDemo }),
-    [segment, navigate, scrollToSection, dialog, openDialog, closeDialog, demo, setDemo, showDemo],
+    () => ({
+      segment,
+      navigate,
+      scrollToSection,
+      dialog,
+      openDialog,
+      closeDialog,
+      demo,
+      setDemo,
+      showDemo,
+      resolveDialogFocus,
+    }),
+    [segment, navigate, scrollToSection, dialog, openDialog, closeDialog, demo, setDemo, showDemo, resolveDialogFocus],
   );
 
   return <SiteContext.Provider value={value}>{children}</SiteContext.Provider>;

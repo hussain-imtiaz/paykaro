@@ -34,7 +34,7 @@ export function PortfolioFacts() {
                 i >= 1 && "lg:border-l lg:border-hairline",
               )}
             >
-              <p className="font-heading text-[32px] leading-none font-semibold tracking-[-0.03em] sm:text-[48px]">
+              <p className="font-heading text-[28px] leading-none font-semibold tracking-[-0.03em] sm:text-[48px]">
                 {f.big}
               </p>
               <p className="mt-3 text-[14px] font-semibold">{f.label}</p>

@@ -41,7 +41,7 @@ export function Hero() {
 
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-[12%] -z-10 flex justify-center [--logo-base:rgba(255,255,255,0.05)] [--logo-face:rgba(255,255,255,0.08)]"
+        className="pointer-events-none absolute inset-x-0 top-[10%] -z-10 flex justify-center opacity-70 mix-blend-soft-light [--logo-base:rgba(255,255,255,0.10)] [--logo-face:rgba(255,255,255,0.22)]"
       >
         <PaykaroLogo decorative className="w-[min(92vw,1120px)]" />
       </div>

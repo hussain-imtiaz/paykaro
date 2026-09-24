@@ -169,11 +169,12 @@ function Body({ state }: { state: Exclude<DialogState, null> }) {
 }
 
 export function SiteDialogs() {
-  const { dialog, closeDialog } = useSite();
+  const { dialog, closeDialog, resolveDialogFocus } = useSite();
   const stateKey = dialog ? `${dialog.type}-${"key" in dialog ? dialog.key : ""}` : "none";
   return (
     <Dialog open={!!dialog} onOpenChange={(open) => !open && closeDialog()}>
       <DialogContent
+        finalFocus={resolveDialogFocus}
         className="max-h-[calc(100svh-2rem)] gap-5 overflow-y-auto rounded-[var(--radius-card)] bg-surface p-7 text-fg ring-hairline sm:max-w-[520px] sm:p-8"
       >
         {dialog && <Body key={stateKey} state={dialog} />}

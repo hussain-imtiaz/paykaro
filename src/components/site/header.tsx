@@ -1,9 +1,9 @@
 "use client";
 
-import { Menu, Search } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PaykaroLogo } from "@/components/brand/paykaro-logo";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { SEGMENT_KEYS, segments, services, type SegmentKey } from "@/lib/content";
 import { cn } from "@/lib/utils";
 import { useSite } from "./site-context";
@@ -85,7 +85,7 @@ export function SiteHeader() {
       ref={headerRef}
       data-theme={theme}
       className={cn(
-        "fixed inset-x-0 top-0 z-40 text-fg transition-[background-color,box-shadow] duration-200",
+        "fixed inset-x-0 top-0 z-40 text-fg",
         business && "bg-charcoal shadow-[0_1px_0_rgba(255,255,255,0.08)]",
         !business && !overlay && "bg-surface/95 shadow-[0_1px_0_rgba(25,30,48,0.08)] backdrop-blur-md",
         overlay && "bg-gradient-to-b from-black/45 to-transparent",
@@ -272,7 +272,7 @@ function MegaMenu({
                     type="button"
                     className="text-left text-[14px] text-fg-muted hover:text-fg hover:underline"
                     onClick={() => {
-                      onClose();
+                      onClose(true);
                       openDialog({ type: "service", key: k });
                     }}
                   >
@@ -286,7 +286,7 @@ function MegaMenu({
                     type="button"
                     className="text-left text-[14px] text-fg-muted hover:text-fg hover:underline"
                     onClick={() => {
-                      onClose();
+                      onClose(true);
                       openDialog({ type: "info", key: "retail" });
                     }}
                   >
@@ -321,7 +321,7 @@ function MegaMenu({
                 type="button"
                 className="hover:text-seg-text hover:underline"
                 onClick={() => {
-                  onClose();
+                  onClose(true);
                   openDialog({ type: "info", key: "login" });
                 }}
               >
@@ -370,10 +370,17 @@ function MobileNav() {
         side="right"
         className="w-full gap-0 overflow-y-auto bg-page p-0 text-fg data-[side=right]:w-full data-[side=right]:sm:max-w-md"
         finalFocus={() => !skipFocusReturn.current}
+        showCloseButton={false}
       >
-        <div className="flex h-[var(--header-h)] items-center px-5">
+        <div className="flex h-[var(--header-h)] shrink-0 items-center justify-between px-5">
           <PaykaroLogo decorative className="w-[56px]" />
           <SheetTitle className="sr-only">Menu</SheetTitle>
+          <SheetClose
+            className="flex size-10 items-center justify-center rounded-[var(--radius-btn)] hover:bg-current/10"
+            aria-label="Close menu"
+          >
+            <X className="size-5" strokeWidth={1.75} aria-hidden="true" />
+          </SheetClose>
         </div>
         <nav aria-label="Banking segments" className="px-4">
           <ul className="grid gap-2">

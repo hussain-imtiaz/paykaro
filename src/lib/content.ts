@@ -117,6 +117,12 @@ export const services: Record<ServiceKey, Service> = {
   },
 };
 
+/** Service name for mid-sentence use; Raast and Micro are proper nouns and keep their capitals. */
+export function serviceCtaName(key: ServiceKey) {
+  const name = services[key].short;
+  return /^(Raast|Micro)\b/.test(name) ? name : name.charAt(0).toLowerCase() + name.slice(1);
+}
+
 export const SERVICE_ORDER: ServiceKey[] = ["transfer", "bills", "qr", "atm", "cash", "takaful"];
 
 export interface Journey {
