@@ -1,0 +1,372 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is([data-theme="dark"] *));
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-inter-tight), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, monospace;
+
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-hairline: var(--hairline);
+  --color-navy: #191e30;
+  --color-charcoal: #1c1c1f;
+
+  --color-seg: var(--seg);
+  --color-seg-fill: var(--seg-fill);
+  --color-seg-on: var(--seg-on);
+  --color-seg-soft: var(--seg-soft);
+  --color-seg-text: var(--accent-text);
+  --color-seg-bright: var(--seg-bright);
+  --color-seg-card: var(--seg-card-bg);
+  --color-seg-card-fg: var(--seg-card-fg);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-btn: 4px;
+  --radius-card: 20px;
+  --radius-panel: 32px;
+
+  --animate-rise: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-marquee: marquee 38s linear infinite;
+}
+
+/* Segment tokens: brand colour, readable ink on light, bright accent on dark,
+   button fill + its text colour, soft tint, logo backing/glyphs and card colours. */
+[data-seg="personal"],
+[data-seg="business"] {
+  --seg: #f16557;
+  --seg-ink: #a7220f;
+  --seg-bright: #f16557;
+  --seg-fill: #f16557;
+  --seg-on: #191e30;
+  --seg-soft: #fde8e3;
+  --seg-soft-dark: rgba(241, 101, 87, 0.1);
+  --logo-base: #f16557;
+  --logo-face: #ffffff;
+  --seg-card-bg: #f16557;
+  --seg-card-fg: #191e30;
+  --seg-glow: rgba(241, 101, 87, 0.85);
+}
+[data-seg="business"] {
+  --seg-card-bg: #1c1c1f;
+  --seg-card-fg: #ffffff;
+}
+[data-seg="family"] {
+  --seg: #0283ff;
+  --seg-ink: #0663bd;
+  --seg-bright: #0283ff;
+  --seg-fill: #0663bd;
+  --seg-on: #ffffff;
+  --seg-soft: #e2efff;
+  --seg-soft-dark: rgba(2, 131, 255, 0.12);
+  --logo-base: #0663bd;
+  --logo-face: #ffffff;
+  --seg-card-bg: #0663bd;
+  --seg-card-fg: #ffffff;
+  --seg-glow: rgba(2, 131, 255, 0.85);
+}
+[data-seg="agri"] {
+  --seg: #00d164;
+  --seg-ink: #00652f;
+  --seg-bright: #00d164;
+  --seg-fill: #00d164;
+  --seg-on: #191e30;
+  --seg-soft: #dcf7e8;
+  --seg-soft-dark: rgba(0, 209, 100, 0.1);
+  --logo-base: #00d164;
+  --logo-face: #191e30;
+  --seg-card-bg: #00d164;
+  --seg-card-fg: #191e30;
+  --seg-glow: rgba(0, 209, 100, 0.8);
+}
+[data-seg="assisted"] {
+  --seg: #ffc409;
+  --seg-ink: #795506;
+  --seg-bright: #ffc409;
+  --seg-fill: #ffc409;
+  --seg-on: #191e30;
+  --seg-soft: #fff3cc;
+  --seg-soft-dark: rgba(255, 196, 9, 0.1);
+  --logo-base: #ffc409;
+  --logo-face: #191e30;
+  --seg-card-bg: #ffc409;
+  --seg-card-fg: #191e30;
+  --seg-glow: rgba(255, 196, 9, 0.8);
+}
+
+[data-seg] {
+  --accent-text: var(--seg-ink);
+}
+
+[data-theme="light"],
+[data-theme="light"] [data-seg] {
+  --page: #f4f3ef;
+  --surface: #ffffff;
+  --surface-2: #eceae4;
+  --fg: #191e30;
+  --fg-muted: #5b6072;
+  --hairline: rgba(25, 30, 48, 0.12);
+  --accent-text: var(--seg-ink);
+  --tint: var(--seg-soft);
+  --section-dark: #191e30;
+
+  --background: #ffffff;
+  --foreground: #191e30;
+  --popover: #ffffff;
+  --popover-foreground: #191e30;
+  --card: #ffffff;
+  --card-foreground: #191e30;
+  --muted: #f4f3ef;
+  --muted-foreground: #5b6072;
+  --border: rgba(25, 30, 48, 0.12);
+  --input: rgba(25, 30, 48, 0.18);
+  --ring: var(--seg-ink);
+}
+
+[data-theme="dark"],
+[data-theme="dark"] [data-seg] {
+  --page: #1c1c1f;
+  --surface: #26262a;
+  --surface-2: #2f2f34;
+  --fg: #ffffff;
+  --fg-muted: #b3b6c0;
+  --hairline: rgba(255, 255, 255, 0.12);
+  --accent-text: var(--seg-bright);
+  --tint: var(--seg-soft-dark);
+  --section-dark: #121214;
+
+  --background: #1c1c1f;
+  --foreground: #ffffff;
+  --popover: #26262a;
+  --popover-foreground: #ffffff;
+  --card: #26262a;
+  --card-foreground: #ffffff;
+  --muted: #2f2f34;
+  --muted-foreground: #b3b6c0;
+  --border: rgba(255, 255, 255, 0.12);
+  --input: rgba(255, 255, 255, 0.18);
+  --ring: var(--seg-bright);
+}
+
+/* Navy sections inside light pages keep the brand navy rather than charcoal. */
+[data-theme="dark"][data-tone="navy"] {
+  --page: #191e30;
+  --surface: #232940;
+  --surface-2: #2c3350;
+  --fg-muted: #b4b9cc;
+}
+
+[data-theme] {
+  --primary: var(--seg-fill);
+  --primary-foreground: var(--seg-on);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--fg);
+  --accent: var(--surface-2);
+  --accent-foreground: var(--fg);
+}
+
+:root {
+  --radius: 0.625rem;
+  --destructive: #c0392b;
+  --header-h: 72px;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    @apply font-sans;
+    scroll-padding-top: calc(var(--header-h) + 16px);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--page);
+    color: var(--fg);
+    text-rendering: optimizeLegibility;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-heading);
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent-text);
+    outline-offset: 3px;
+  }
+  ::selection {
+    background: var(--seg);
+    color: var(--seg-on);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes ribbon-flow {
+  to {
+    stroke-dashoffset: -2400;
+  }
+}
+
+@keyframes scan-sweep {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(var(--sweep, 96px));
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+/* Scroll reveals only hide content once JS has confirmed it can show it again. */
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+html.js .reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Rolling label: the hover state slides a duplicate label up into view. */
+.roll {
+  display: inline-grid;
+  overflow: hidden;
+  line-height: 1.25;
+}
+.roll > span {
+  grid-area: 1 / 1;
+  transition: transform 0.35s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.roll > span + span {
+  transform: translateY(110%);
+}
+:is(a, button):hover > .roll > span:first-child,
+:is(a, button):focus-visible > .roll > span:first-child {
+  transform: translateY(-110%);
+}
+:is(a, button):hover > .roll > span + span,
+:is(a, button):focus-visible > .roll > span + span {
+  transform: none;
+}
+
+.chev-shift {
+  transition: transform 0.25s ease;
+}
+:is(a, button):hover .chev-shift,
+:is(a, button):focus-visible .chev-shift {
+  transform: translateX(3px);
+}
+
+.ribbon-path {
+  stroke-dasharray: 900 1500;
+  animation: ribbon-flow 14s linear infinite;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .roll > span {
+    transition: none;
+  }
+  .roll > span + span {
+    display: none;
+  }
+  :is(a, button):hover > .roll > span:first-child {
+    transform: none;
+  }
+  .ribbon-path,
+  .motion-safe-anim {
+    animation: none !important;
+  }
+  .chev-shift {
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
