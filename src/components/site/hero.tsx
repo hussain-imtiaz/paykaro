@@ -97,7 +97,10 @@ export function Hero() {
       <motion.div
         className="mx-auto w-full max-w-[1580px] px-4 pb-10 min-[810px]:px-10 lg:pb-[100px]"
         style={{ originY: 1 }}
-        {...anim({ scale: 1.2, y: 80 }, { delay: 1, duration: 1, ease: [1, 0.08, 0.34, 0.95] })}
+        {...anim(
+          { scale: 1.2, y: 80, opacity: 0 },
+          { delay: 1, duration: 1, ease: [1, 0.08, 0.34, 0.95], opacity: { delay: 0.6, duration: 0.6 } },
+        )}
       >
         <p className="text-[16px] font-medium lg:text-[18px]">{s.eyebrow} · Banking and digital services for Pakistan</p>
         <div className="mt-4 grid items-end gap-6 lg:mt-6 lg:grid-cols-[1.35fr_1fr] lg:gap-10">

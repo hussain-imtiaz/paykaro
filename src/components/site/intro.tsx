@@ -189,7 +189,7 @@ function Ways({ onDemo }: { onDemo: (k: DemoKey) => void }) {
   return (
     <div className="pt-[37px] min-[810px]:pt-[152px]">
       <Appear>
-        <h2 id="ways-title" className="mx-auto max-w-[760px] text-center text-[36px] leading-[0.95] font-medium tracking-[-0.01em] min-[810px]:text-[80px]">
+        <h2 id="ways-title" className="mx-auto max-w-[1040px] text-center text-[36px] leading-[0.95] font-medium tracking-[-0.01em] min-[810px]:text-[80px]">
           Three ways in. Pick the one that is yours.
         </h2>
       </Appear>

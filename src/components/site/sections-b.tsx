@@ -60,7 +60,7 @@ export function ServiceTabs() {
                 key={k}
                 value={k}
                 data-seg={k}
-                className="relative h-auto flex-1 rounded-none border-0 px-2 py-5 font-heading min-[810px]:px-5 text-[14px] font-normal text-white/80 hover:text-white data-active:bg-transparent data-active:text-seg-bright data-active:shadow-none dark:data-active:border-transparent dark:data-active:bg-transparent min-[810px]:flex-1 min-[810px]:text-[15px]"
+                className="relative h-auto flex-1 rounded-none border-0 px-2 py-5 font-heading min-[810px]:px-5 text-[14px] font-normal text-white/80 hover:text-white data-active:bg-transparent data-active:text-seg-bright data-active:shadow-none dark:data-active:text-seg-bright dark:data-active:border-transparent dark:data-active:bg-transparent min-[810px]:flex-1 min-[810px]:text-[15px]"
               >
                 {segments[k].label}
                 <span className="absolute inset-x-2 bottom-0 h-0.5 bg-seg min-[810px]:inset-x-5 opacity-0 transition-opacity duration-300 in-data-active:opacity-100" aria-hidden="true" />

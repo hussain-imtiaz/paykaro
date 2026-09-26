@@ -142,9 +142,9 @@ export function UpdatesAndFaq() {
   const { openDialog } = useSite();
   const [open, setOpen] = useState<number | null>(null);
   return (
-    <section id="updates" aria-labelledby="updates-title" className="bg-paper">
+    <section id="updates" aria-labelledby="updates-title" className="overflow-x-clip bg-paper">
       <ScrubHeadline className="px-4 pt-[100px] pb-12 text-center min-[810px]:pt-[200px] min-[810px]:pb-[70px]">
-        <h2 id="updates-title" className="text-[48px] leading-[0.85] font-medium tracking-[-0.02em] min-[810px]:text-[80px]">
+        <h2 id="updates-title" className="text-[56px] leading-[0.85] font-medium tracking-[-0.02em] min-[810px]:text-[100px]">
           What’s
           <br />
           next

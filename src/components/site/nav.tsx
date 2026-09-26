@@ -20,6 +20,7 @@ export function DesktopNav() {
   const triggers = useRef<Partial<Record<SegmentKey, HTMLAnchorElement | null>>>({});
   const suppressFocusOpen = useRef(false);
   const navRef = useRef<HTMLElement>(null);
+  const reduce = useReducedMotion();
 
   const open = useCallback((k: SegmentKey) => {
     window.clearTimeout(timer.current);
@@ -52,9 +53,12 @@ export function DesktopNav() {
   }, [close]);
 
   return (
-    <nav
+    <motion.nav
       ref={navRef}
       aria-label="Main"
+      initial={reduce ? false : { opacity: 0, y: 30, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay: 0.2, duration: 0.4, ease: [0.93, 0.03, 0.56, 1] }}
       className="relative z-30 hidden h-[68px] items-center px-6 text-white lg:flex"
       onPointerLeave={(e) => {
         if (e.pointerType === "mouse") timer.current = window.setTimeout(() => close(), 160);
@@ -129,7 +133,7 @@ export function DesktopNav() {
         </button>
         <PillButton label="Get started" onClick={() => openDialog({ type: "info", key: "onboarding" })} />
       </div>
-    </nav>
+    </motion.nav>
   );
 }
 
