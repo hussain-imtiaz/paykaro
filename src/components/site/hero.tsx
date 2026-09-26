@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { SEGMENT_KEYS, segments } from "@/lib/content";
+import { scrollToTarget } from "@/lib/smooth-scroll";
 import { cn } from "@/lib/utils";
 import { DesktopNav } from "./nav";
 import { useSite } from "./site-context";
@@ -21,7 +22,11 @@ export function Hero() {
     <section
       aria-labelledby="hero-title"
       data-theme="dark"
-      className="relative isolate flex h-[100svh] min-h-[640px] flex-col overflow-hidden bg-[#2b2b2b] text-white"
+      className="sticky top-0 isolate flex h-[100svh] min-h-[640px] flex-col overflow-hidden bg-[#2b2b2b] text-white"
+      onFocusCapture={(e) => {
+        // The pinned hero sits under the next sheet once scrolled, so keyboard focus landing in it must bring it back.
+        if (window.scrollY > 0 && e.target.matches(":focus-visible")) scrollToTarget(0, { immediate: true });
+      }}
     >
       <motion.div className="absolute inset-0 -z-20" {...anim({ opacity: 0 }, { delay: 0.3, duration: 1 })}>
         {SEGMENT_KEYS.map((key, i) => (

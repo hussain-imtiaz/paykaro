@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-export type Tone = "paper" | "card" | "night" | "black" | "tint" | "hero";
+export type Tone = "paper" | "card" | "night" | "black" | "tint" | "hero" | "clear";
 
 const toneBg: Record<Tone, string> = {
   paper: "var(--paper)",
@@ -10,6 +10,7 @@ const toneBg: Record<Tone, string> = {
   black: "#0b0b0b",
   tint: "var(--tint)",
   hero: "#2b2b2b",
+  clear: "transparent",
 };
 
 /**
@@ -27,6 +28,7 @@ export function SheetSection({
   children,
   labelledBy,
   dark,
+  raised,
 }: {
   id?: string;
   tone: Tone;
@@ -38,11 +40,16 @@ export function SheetSection({
   children: ReactNode;
   labelledBy?: string;
   dark?: boolean;
+  /** Stack above a pinned section it scrolls over. */
+  raised?: boolean;
 }) {
   const top = toneBg[above ?? tone];
   const bottom = toneBg[below ?? tone];
   return (
-    <div style={{ background: `linear-gradient(to bottom, ${top} 0 50%, ${bottom} 50% 100%)` }}>
+    <div
+      className={cn(raised && "relative z-10")}
+      style={{ background: `linear-gradient(to bottom, ${top} 0 50%, ${bottom} 50% 100%)` }}
+    >
       <section
         id={id}
         aria-labelledby={labelledBy}

@@ -25,7 +25,7 @@ export function Intro() {
   const IconC = serviceIcons[c];
 
   return (
-    <SheetSection id="services" tone="paper" above="hero" below="night" roundTop roundBottom labelledBy="ways-title">
+    <SheetSection id="services" tone="paper" above="clear" below="night" roundTop roundBottom raised labelledBy="ways-title">
       <Container className="pt-5 pb-[60px] min-[810px]:pt-[100px] min-[810px]:pb-[200px]">
         <h2 className="sr-only">{s.label} services</h2>
         <div className="grid gap-5 lg:grid-cols-3">

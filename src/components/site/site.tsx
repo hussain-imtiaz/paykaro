@@ -25,8 +25,10 @@ function Shell() {
       </a>
       <MobileNav />
       <main id="main-content" tabIndex={-1} className="outline-none">
-        <Hero />
-        <Intro />
+        <div>
+          <Hero />
+          <Intro />
+        </div>
         <Principles />
         <Network />
         <Story />
