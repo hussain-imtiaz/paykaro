@@ -223,20 +223,24 @@ html.lenis body {
 }
 
 /* Pill button: a dark disc grows from the bottom centre while the label rolls up
-   (0.4s, cubic-bezier(1, .08, .17, .95), matching the reference's Btn component). */
-.pill {
-  --pill-ease: cubic-bezier(1, 0.08, 0.17, 0.95);
-  position: relative;
-  isolation: isolate;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: var(--radius-pill);
-  font-family: var(--font-ui);
-  font-weight: 400;
-  white-space: nowrap;
-  -webkit-tap-highlight-color: transparent;
+   (0.4s, cubic-bezier(1, .08, .17, .95), matching the reference's Btn component).
+   Base box rules are layered so position/display utilities on a pill still apply;
+   the hover colour rules below stay unlayered so they beat text-* utilities. */
+@layer components {
+  .pill {
+    --pill-ease: cubic-bezier(1, 0.08, 0.17, 0.95);
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-ui);
+    font-weight: 400;
+    white-space: nowrap;
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 .pill::before {
   content: "";
