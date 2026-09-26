@@ -1,15 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Inter_Tight } from "next/font/google";
+import { Bricolage_Grotesque, Oswald, Zalando_Sans } from "next/font/google";
+import "@fontsource/apfel-grotezk/400.css";
+import "@fontsource/apfel-grotezk/700.css";
 import { PaykaroLogoDefs } from "@/components/brand/paykaro-logo";
 import "./globals.css";
 
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" });
-const interTight = Inter_Tight({
-  variable: "--font-inter-tight",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  display: "swap",
-});
+const bricolage = Bricolage_Grotesque({ variable: "--font-bricolage", subsets: ["latin"], display: "swap" });
+const oswald = Oswald({ variable: "--font-oswald", subsets: ["latin"], display: "swap" });
+const zalando = Zalando_Sans({ variable: "--font-zalando", subsets: ["latin"], display: "swap", adjustFontFallback: false });
 
 export const metadata: Metadata = {
   title: "PayKaro | Banking, aasani say",
@@ -18,15 +16,16 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#191e30",
+  themeColor: "#171717",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} ${interTight.variable} antialiased`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
-      </head>
+    <html
+      lang="en"
+      className={`${bricolage.variable} ${oswald.variable} ${zalando.variable}`}
+      suppressHydrationWarning
+    >
       <body data-seg="personal" data-theme="light" suppressHydrationWarning>
         <PaykaroLogoDefs />
         {children}

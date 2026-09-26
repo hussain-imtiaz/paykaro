@@ -1,40 +1,45 @@
 "use client";
 
 import type { SegmentKey } from "@/lib/content";
-import { SiteHeader } from "./header";
 import { Hero } from "./hero";
-import { Journeys } from "./journeys";
-import { PhoneDemo } from "./phone-demo";
-import { Community, Faq, GetStarted, PortfolioFacts, Safety, SegmentsOverview, SiteFooter } from "./sections";
-import { ServicesBento } from "./services-bento";
+import { Intro } from "./intro";
+import { SmoothScroll } from "./motion";
+import { MobileNav } from "./nav";
+import { IconGradientDefs, Network, Principles, Story } from "./sections-a";
+import { ClarityAndDemo, ServiceTabs } from "./sections-b";
+import { ConceptShowcase, LocalByDefault, Safety, SiteFooter, UpdatesAndFaq } from "./sections-c";
 import { SiteProvider, useSite } from "./site-context";
 import { SiteDialogs } from "./site-dialogs";
 
 function Shell() {
   const { segment } = useSite();
   return (
-    <div data-seg={segment} data-theme={segment === "business" ? "dark" : "light"} className="min-h-screen bg-page text-fg">
+    <div data-seg={segment} data-theme={segment === "business" ? "dark" : "light"} className="min-h-screen bg-night text-ink">
+      <SmoothScroll />
+      <IconGradientDefs />
       <a
         href="#main-content"
-        className="fixed top-3 left-3 z-50 -translate-y-20 rounded-[var(--radius-btn)] bg-seg-fill px-4 py-2.5 text-[14px] font-semibold text-seg-on focus:translate-y-0"
+        className="pill fixed top-3 left-3 z-[70] h-10 -translate-y-20 bg-seg-fill px-5 text-seg-on focus:translate-y-0"
       >
         Skip to content
       </a>
-      <SiteHeader />
+      <MobileNav />
       <main id="main-content" tabIndex={-1} className="outline-none">
         <Hero />
-        <ServicesBento />
-        <Journeys />
-        <PhoneDemo />
-        <PortfolioFacts />
-        <Community />
+        <Intro />
+        <Principles />
+        <Network />
+        <Story />
+        <ServiceTabs />
+        <ClarityAndDemo />
         <Safety />
-        <SegmentsOverview />
-        <Faq />
-        <GetStarted />
+        <LocalByDefault />
+        <UpdatesAndFaq />
+        <ConceptShowcase />
       </main>
       <SiteFooter />
       <SiteDialogs />
+      <div className="grain" aria-hidden="true" />
     </div>
   );
 }

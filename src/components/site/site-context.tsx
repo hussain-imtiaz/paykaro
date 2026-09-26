@@ -21,6 +21,7 @@ import {
   type SegmentKey,
   type ServiceKey,
 } from "@/lib/content";
+import { scrollToTarget } from "@/lib/smooth-scroll";
 
 export type DialogState =
   | { type: "service"; key: ServiceKey }
@@ -37,8 +38,8 @@ interface SiteContextValue {
   dialog: DialogState;
   openDialog: (d: Exclude<DialogState, null>) => void;
   closeDialog: () => void;
-  demo: DemoKey;
-  setDemo: (key: DemoKey) => void;
+  demo: DemoKey | null;
+  setDemo: (key: DemoKey | null) => void;
   showDemo: (key: DemoKey) => void;
   resolveDialogFocus: () => boolean;
 }
@@ -54,10 +55,6 @@ function segmentFromPath(pathname: string | null, fallback: SegmentKey): Segment
   return isSegmentKey(first) ? first : fallback;
 }
 
-function prefersReducedMotion() {
-  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
 function focusSectionHeading(el: HTMLElement) {
   const heading = el.querySelector<HTMLElement>("h2, h3");
   if (heading) {
@@ -70,9 +67,9 @@ export function SiteProvider({ initialSegment, children }: { initialSegment: Seg
   const pathname = usePathname();
   const segment = segmentFromPath(pathname, initialSegment);
   const [dialog, setDialog] = useState<DialogState>(null);
-  const [demoChoice, setDemoChoice] = useState<{ segment: SegmentKey; key: DemoKey } | null>(null);
-  const demo = demoChoice?.segment === segment ? demoChoice.key : segments[segment].demo;
-  const setDemo = useCallback((key: DemoKey) => setDemoChoice({ segment, key }), [segment]);
+  const [demoChoice, setDemoChoice] = useState<{ segment: SegmentKey; key: DemoKey | null } | null>(null);
+  const demo = demoChoice?.segment === segment ? demoChoice.key : null;
+  const setDemo = useCallback((key: DemoKey | null) => setDemoChoice({ segment, key }), [segment]);
   const pendingHash = useRef<string | null>(null);
 
   // Body carries the tokens too, so portalled dialogs and sheets inherit segment colours.
@@ -90,7 +87,7 @@ export function SiteProvider({ initialSegment, children }: { initialSegment: Seg
     if (hash) {
       const el = document.getElementById(hash);
       if (el) {
-        el.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
+        scrollToTarget(el);
         focusSectionHeading(el);
       }
     }
@@ -99,7 +96,7 @@ export function SiteProvider({ initialSegment, children }: { initialSegment: Seg
   const scrollToSection = useCallback((id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
-    el.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
+    scrollToTarget(el);
     focusSectionHeading(el);
     const url = new URL(window.location.href);
     url.hash = id;
@@ -111,12 +108,12 @@ export function SiteProvider({ initialSegment, children }: { initialSegment: Seg
       const url = segmentPath(key) + (hash ? `#${hash}` : "");
       if (key === segment) {
         if (hash) scrollToSection(hash);
-        else window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+        else scrollToTarget(0);
         return;
       }
       pendingHash.current = hash ?? null;
       window.history.pushState(null, "", url);
-      if (!hash) window.scrollTo({ top: 0, behavior: "auto" });
+      if (!hash) scrollToTarget(0, { immediate: true });
     },
     [segment, scrollToSection],
   );
@@ -127,7 +124,8 @@ export function SiteProvider({ initialSegment, children }: { initialSegment: Seg
   const pendingDemoFocus = useRef<DemoKey | null>(null);
 
   const revealDemo = useCallback((key: DemoKey) => {
-    document.getElementById("demo")?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
+    const el = document.getElementById("demo");
+    if (el) scrollToTarget(el);
     document.getElementById(`demo-tab-${key}`)?.focus({ preventScroll: true });
   }, []);
 

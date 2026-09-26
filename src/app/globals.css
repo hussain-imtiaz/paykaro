@@ -5,201 +5,160 @@
 @custom-variant dark (&:is([data-theme="dark"] *));
 
 @theme inline {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-inter-tight), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, monospace;
+  --font-sans: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-ui: "Apfel Grotezk", var(--font-bricolage), ui-sans-serif, sans-serif;
+  --font-nav: var(--font-zalando), ui-sans-serif, sans-serif;
+  --font-num: var(--font-oswald), ui-sans-serif, sans-serif;
 
-  --color-page: var(--page);
-  --color-surface: var(--surface);
-  --color-surface-2: var(--surface-2);
-  --color-fg: var(--fg);
-  --color-fg-muted: var(--fg-muted);
-  --color-hairline: var(--hairline);
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted-ink: var(--muted-ink);
+  --color-faint-ink: var(--faint-ink);
+  --color-line: var(--line);
+  --color-night: #171717;
+  --color-night-2: #1f1f1f;
   --color-navy: #191e30;
-  --color-charcoal: #1c1c1f;
 
   --color-seg: var(--seg);
   --color-seg-fill: var(--seg-fill);
   --color-seg-on: var(--seg-on);
+  --color-seg-ink: var(--accent-ink);
   --color-seg-soft: var(--seg-soft);
-  --color-seg-text: var(--accent-text);
   --color-seg-bright: var(--seg-bright);
-  --color-seg-card: var(--seg-card-bg);
-  --color-seg-card-fg: var(--seg-card-fg);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
   --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-destructive: #c0392b;
 
+  --radius: 0.75rem;
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
-  --radius-btn: 4px;
-  --radius-card: 20px;
-  --radius-panel: 32px;
-
-  --animate-rise: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  --animate-marquee: marquee 38s linear infinite;
+  --radius-card: 24px;
+  --radius-sheet: 32px;
+  --radius-pill: 68px;
 }
 
-/* Segment tokens: brand colour, readable ink on light, bright accent on dark,
-   button fill + its text colour, soft tint, logo backing/glyphs and card colours. */
+/* Segment tokens. --seg is the brand colour, --seg-fill/--seg-on the pill pair,
+   --seg-ink the readable accent on light surfaces, --seg-bright the accent on dark. */
 [data-seg="personal"],
 [data-seg="business"] {
   --seg: #f16557;
+  --seg-fill: #f16557;
+  --seg-on: #171717;
   --seg-ink: #a7220f;
   --seg-bright: #f16557;
-  --seg-fill: #f16557;
-  --seg-on: #191e30;
-  --seg-soft: #fde8e3;
-  --seg-soft-dark: rgba(241, 101, 87, 0.1);
+  --seg-soft: #fdebe6;
   --logo-base: #f16557;
   --logo-face: #ffffff;
-  --seg-card-bg: #f16557;
-  --seg-card-fg: #191e30;
-  --seg-glow: rgba(241, 101, 87, 0.85);
-}
-[data-seg="business"] {
-  --seg-card-bg: #1c1c1f;
-  --seg-card-fg: #ffffff;
 }
 [data-seg="family"] {
   --seg: #0283ff;
-  --seg-ink: #0663bd;
-  --seg-bright: #0283ff;
   --seg-fill: #0663bd;
   --seg-on: #ffffff;
-  --seg-soft: #e2efff;
-  --seg-soft-dark: rgba(2, 131, 255, 0.12);
+  --seg-ink: #0663bd;
+  --seg-bright: #3d9cff;
+  --seg-soft: #e4f0ff;
   --logo-base: #0663bd;
   --logo-face: #ffffff;
-  --seg-card-bg: #0663bd;
-  --seg-card-fg: #ffffff;
-  --seg-glow: rgba(2, 131, 255, 0.85);
 }
 [data-seg="agri"] {
   --seg: #00d164;
+  --seg-fill: #00d164;
+  --seg-on: #171717;
   --seg-ink: #00652f;
   --seg-bright: #00d164;
-  --seg-fill: #00d164;
-  --seg-on: #191e30;
-  --seg-soft: #dcf7e8;
-  --seg-soft-dark: rgba(0, 209, 100, 0.1);
+  --seg-soft: #def7e9;
   --logo-base: #00d164;
   --logo-face: #191e30;
-  --seg-card-bg: #00d164;
-  --seg-card-fg: #191e30;
-  --seg-glow: rgba(0, 209, 100, 0.8);
 }
 [data-seg="assisted"] {
   --seg: #ffc409;
+  --seg-fill: #ffc409;
+  --seg-on: #171717;
   --seg-ink: #795506;
   --seg-bright: #ffc409;
-  --seg-fill: #ffc409;
-  --seg-on: #191e30;
-  --seg-soft: #fff3cc;
-  --seg-soft-dark: rgba(255, 196, 9, 0.1);
+  --seg-soft: #fff4d1;
   --logo-base: #ffc409;
   --logo-face: #191e30;
-  --seg-card-bg: #ffc409;
-  --seg-card-fg: #191e30;
-  --seg-glow: rgba(255, 196, 9, 0.8);
 }
 
 [data-seg] {
-  --accent-text: var(--seg-ink);
+  --seg-15: color-mix(in srgb, var(--seg) 15%, #fff);
+  --seg-35: color-mix(in srgb, var(--seg) 38%, #fff);
+  --seg-60: color-mix(in srgb, var(--seg) 64%, #fff);
+  --seg-grad: linear-gradient(180deg, var(--seg) 0%, color-mix(in srgb, var(--seg) 35%, #fff) 100%);
 }
 
+/* Light surfaces follow Ummah: #F5F5F5 paper, white cards, #171717 ink.
+   Business keeps its charcoal palette, so its light surfaces turn dark. */
 [data-theme="light"],
 [data-theme="light"] [data-seg] {
-  --page: #f4f3ef;
-  --surface: #ffffff;
-  --surface-2: #eceae4;
-  --fg: #191e30;
-  --fg-muted: #5b6072;
-  --hairline: rgba(25, 30, 48, 0.12);
-  --accent-text: var(--seg-ink);
+  --paper: #f5f5f5;
+  --card: #ffffff;
+  --ink: #171717;
+  --muted-ink: #5e5e5e;
+  --faint-ink: #767676;
+  --line: rgba(23, 23, 23, 0.1);
+  --accent-ink: var(--seg-ink);
   --tint: var(--seg-soft);
-  --section-dark: #191e30;
 
   --background: #ffffff;
-  --foreground: #191e30;
+  --foreground: #171717;
   --popover: #ffffff;
-  --popover-foreground: #191e30;
-  --card: #ffffff;
-  --card-foreground: #191e30;
-  --muted: #f4f3ef;
-  --muted-foreground: #5b6072;
-  --border: rgba(25, 30, 48, 0.12);
-  --input: rgba(25, 30, 48, 0.18);
+  --popover-foreground: #171717;
+  --muted: #f5f5f5;
+  --muted-foreground: #5e5e5e;
+  --border: rgba(23, 23, 23, 0.1);
+  --input: rgba(23, 23, 23, 0.2);
   --ring: var(--seg-ink);
 }
 
 [data-theme="dark"],
 [data-theme="dark"] [data-seg] {
-  --page: #1c1c1f;
-  --surface: #26262a;
-  --surface-2: #2f2f34;
-  --fg: #ffffff;
-  --fg-muted: #b3b6c0;
-  --hairline: rgba(255, 255, 255, 0.12);
-  --accent-text: var(--seg-bright);
-  --tint: var(--seg-soft-dark);
-  --section-dark: #121214;
+  --paper: #1c1c1f;
+  --card: #26262a;
+  --ink: #ffffff;
+  --muted-ink: #b9b9bf;
+  --faint-ink: #9a9aa2;
+  --line: rgba(255, 255, 255, 0.12);
+  --accent-ink: var(--seg-bright);
+  --tint: color-mix(in srgb, var(--seg) 12%, #1c1c1f);
 
   --background: #1c1c1f;
   --foreground: #ffffff;
   --popover: #26262a;
   --popover-foreground: #ffffff;
-  --card: #26262a;
-  --card-foreground: #ffffff;
-  --muted: #2f2f34;
-  --muted-foreground: #b3b6c0;
+  --muted: #26262a;
+  --muted-foreground: #b9b9bf;
   --border: rgba(255, 255, 255, 0.12);
-  --input: rgba(255, 255, 255, 0.18);
+  --input: rgba(255, 255, 255, 0.2);
   --ring: var(--seg-bright);
-}
-
-/* Navy sections inside light pages keep the brand navy rather than charcoal. */
-[data-theme="dark"][data-tone="navy"] {
-  --page: #191e30;
-  --surface: #232940;
-  --surface-2: #2c3350;
-  --fg-muted: #b4b9cc;
 }
 
 [data-theme] {
   --primary: var(--seg-fill);
   --primary-foreground: var(--seg-on);
-  --secondary: var(--surface-2);
-  --secondary-foreground: var(--fg);
-  --accent: var(--surface-2);
-  --accent-foreground: var(--fg);
-}
-
-:root {
-  --radius: 0.625rem;
-  --destructive: #c0392b;
-  --header-h: 72px;
+  --secondary: var(--paper);
+  --secondary-foreground: var(--ink);
+  --accent: var(--paper);
+  --accent-foreground: var(--ink);
 }
 
 @layer base {
@@ -207,28 +166,29 @@
     @apply border-border;
   }
   html {
-    @apply font-sans;
-    scroll-padding-top: calc(var(--header-h) + 16px);
+    font-family: var(--font-sans);
     -webkit-text-size-adjust: 100%;
+    background: #171717;
   }
   body {
-    background: var(--page);
-    color: var(--fg);
-    text-rendering: optimizeLegibility;
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   h1,
   h2,
   h3,
   h4 {
     font-family: var(--font-heading);
-    letter-spacing: -0.025em;
+    font-weight: 500;
     text-wrap: balance;
   }
   p {
     text-wrap: pretty;
   }
   :focus-visible {
-    outline: 2px solid var(--accent-text);
+    outline: 2px solid var(--accent-ink);
     outline-offset: 3px;
   }
   ::selection {
@@ -237,100 +197,97 @@
   }
 }
 
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
+/* Film grain overlay, as on the reference. */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-@keyframes ribbon-flow {
-  to {
-    stroke-dashoffset: -2400;
-  }
+/* Pill button: a dark disc grows from the bottom centre while the label rolls up
+   (0.4s, cubic-bezier(1, .08, .17, .95), matching the reference's Btn component). */
+.pill {
+  --pill-ease: cubic-bezier(1, 0.08, 0.17, 0.95);
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-ui);
+  font-weight: 400;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
 }
-
-@keyframes scan-sweep {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(var(--sweep, 96px));
-  }
+.pill::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 100%;
+  width: 140%;
+  aspect-ratio: 1;
+  border-radius: 9999px;
+  background: var(--pill-hover, #171717);
+  transform: translate(-50%, 0) scale(0);
+  transform-origin: 50% 0%;
+  transition: transform 0.4s var(--pill-ease), top 0.4s var(--pill-ease);
 }
-
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.85);
-    opacity: 0.6;
-  }
-  100% {
-    transform: scale(1.35);
-    opacity: 0;
-  }
+.pill:hover::before,
+.pill:focus-visible::before {
+  top: -20%;
+  transform: translate(-50%, 0) scale(1);
 }
-
-/* Scroll reveals only hide content once JS has confirmed it can show it again. */
-html.js .reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition:
-    opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
-    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
-  transition-delay: var(--reveal-delay, 0ms);
-}
-html.js .reveal[data-visible="true"] {
-  opacity: 1;
-  transform: none;
-}
-
-/* Rolling label: the hover state slides a duplicate label up into view. */
-.roll {
+.pill .roll {
   display: inline-grid;
   overflow: hidden;
-  line-height: 1.25;
+  line-height: 1.2;
 }
-.roll > span {
+.pill .roll > span {
   grid-area: 1 / 1;
-  transition: transform 0.35s cubic-bezier(0.7, 0, 0.2, 1);
+  transition:
+    transform 0.4s var(--pill-ease),
+    color 0.4s var(--pill-ease);
 }
-.roll > span + span {
-  transform: translateY(110%);
+.pill .roll > span + span {
+  transform: translateY(115%);
 }
-:is(a, button):hover > .roll > span:first-child,
-:is(a, button):focus-visible > .roll > span:first-child {
-  transform: translateY(-110%);
+.pill:hover .roll > span:first-child,
+.pill:focus-visible .roll > span:first-child {
+  transform: translateY(-115%);
 }
-:is(a, button):hover > .roll > span + span,
-:is(a, button):focus-visible > .roll > span + span {
+.pill:hover .roll > span + span,
+.pill:focus-visible .roll > span + span {
   transform: none;
 }
-
-.chev-shift {
-  transition: transform 0.25s ease;
+.pill:hover,
+.pill:focus-visible {
+  color: var(--pill-hover-fg, #fff);
+  border-color: transparent;
 }
-:is(a, button):hover .chev-shift,
-:is(a, button):focus-visible .chev-shift {
-  transform: translateX(3px);
-}
-
-.ribbon-path {
-  stroke-dasharray: 900 1500;
-  animation: ribbon-flow 14s linear infinite;
+.pill {
+  transition:
+    color 0.4s var(--pill-ease),
+    border-color 0.4s var(--pill-ease);
 }
 
 .no-scrollbar {
@@ -340,33 +297,43 @@ html.js .reveal[data-visible="true"] {
   display: none;
 }
 
+.text-grad {
+  background: var(--seg-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@keyframes light-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scaleY(1);
+  }
+  50% {
+    transform: translate3d(-3%, 2%, 0) scaleY(1.12);
+  }
+}
+@keyframes kenburns {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  html.js .reveal {
-    opacity: 1;
-    transform: none;
+  .pill::before,
+  .pill .roll > span {
     transition: none;
   }
-  .roll > span {
-    transition: none;
-  }
-  .roll > span + span {
+  .pill .roll > span + span {
     display: none;
   }
-  :is(a, button):hover > .roll > span:first-child {
+  .pill:hover .roll > span:first-child {
     transform: none;
   }
-  .ribbon-path,
-  .motion-safe-anim {
+  .motion-anim {
     animation: none !important;
-  }
-  .chev-shift {
-    transition: none;
-  }
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    scroll-behavior: auto !important;
   }
 }

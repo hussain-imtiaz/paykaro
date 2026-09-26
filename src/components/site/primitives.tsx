@@ -2,30 +2,22 @@
 
 import {
   ArrowLeftRight,
+  ArrowUpRight,
   Banknote,
-  ChevronRight,
+  ChevronDown,
   CircleCheck,
-  CircleHelp,
   CreditCard,
   Fingerprint,
-  House,
   LockKeyhole,
   QrCode,
   ReceiptText,
   ShieldCheck,
-  Sprout,
   Store,
+  Tag,
   Users,
   type LucideIcon,
 } from "lucide-react";
-import {
-  useEffect,
-  useRef,
-  type ButtonHTMLAttributes,
-  type ComponentProps,
-  type CSSProperties,
-  type ReactNode,
-} from "react";
+import type { ButtonHTMLAttributes, ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { segmentPath, type SegmentKey, type ServiceKey } from "@/lib/content";
 import { useSite } from "./site-context";
@@ -39,21 +31,34 @@ export const serviceIcons: Record<ServiceKey, LucideIcon> = {
   takaful: ShieldCheck,
 };
 
-export const extraIcons = {
+export const icons = {
   fingerprint: Fingerprint,
   lock: LockKeyhole,
-  help: CircleHelp,
   check: CircleCheck,
   receipt: ReceiptText,
   shield: ShieldCheck,
-  house: House,
   users: Users,
   store: Store,
-  sprout: Sprout,
+  tag: Tag,
 } satisfies Record<string, LucideIcon>;
 
-export function Chevron({ className }: { className?: string }) {
-  return <ChevronRight aria-hidden="true" strokeWidth={1.75} className={cn("size-4 shrink-0", className)} />;
+export { ArrowUpRight, ChevronDown };
+
+/** Ummah's max-width container: 1580px, 40px gutters on desktop, 16px on mobile. */
+export function Container({ className, children }: { className?: string; children: ReactNode }) {
+  return <div className={cn("mx-auto w-full max-w-[1580px] px-4 min-[810px]:px-10", className)}>{children}</div>;
+}
+
+type PillVariant = "fill" | "outline" | "outline-light";
+
+const pillVariant: Record<PillVariant, string> = {
+  fill: "bg-seg-fill text-seg-on",
+  outline: "border border-ink/25 text-ink",
+  "outline-light": "border border-white/40 text-white",
+};
+
+export function pillClass(variant: PillVariant = "fill", size: "md" | "lg" = "md") {
+  return cn("pill", pillVariant[variant], size === "md" ? "h-10 px-5 text-[16px]" : "h-11 px-6 text-[16px]");
 }
 
 export function Roll({ children }: { children: string }) {
@@ -65,41 +70,16 @@ export function Roll({ children }: { children: string }) {
   );
 }
 
-type Variant = "primary" | "outline" | "ghost-light" | "navy";
-
-const variantClass: Record<Variant, string> = {
-  primary: "bg-seg-fill text-seg-on hover:brightness-[1.06]",
-  outline: "border border-current/30 text-fg hover:border-current/70",
-  "ghost-light": "border border-white/40 text-white hover:border-white hover:bg-white/10",
-  navy: "bg-navy text-white hover:bg-[#232940]",
-};
-
-export function buttonClass(variant: Variant = "primary", size: "md" | "sm" = "md") {
-  return cn(
-    "group inline-flex items-center justify-center gap-3 rounded-[var(--radius-btn)] font-semibold whitespace-nowrap select-none",
-    "transition-[background-color,border-color,filter] duration-200",
-    size === "md" ? "h-12 px-5 text-[15px]" : "h-10 px-4 text-sm",
-    variantClass[variant],
-  );
-}
-
-export function ActionButton({
-  variant = "primary",
-  size = "md",
+export function PillButton({
   label,
-  chevron = true,
+  variant = "fill",
+  size = "md",
   className,
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: Variant;
-  size?: "md" | "sm";
-  label: string;
-  chevron?: boolean;
-}) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & { label: string; variant?: PillVariant; size?: "md" | "lg" }) {
   return (
-    <button type="button" className={cn(buttonClass(variant, size), className)} {...props}>
+    <button type="button" className={cn(pillClass(variant, size), className)} {...props}>
       <Roll>{label}</Roll>
-      {chevron && <Chevron className="chev-shift" />}
     </button>
   );
 }
@@ -121,10 +101,9 @@ export function SegmentLink({
   children: ReactNode;
 }) {
   const site = useSite();
-  const href = segmentPath(segment) + (hash ? `#${hash}` : "");
   return (
     <a
-      href={href}
+      href={segmentPath(segment) + (hash ? `#${hash}` : "")}
       {...props}
       onClick={(e) => {
         props.onClick?.(e);
@@ -139,30 +118,8 @@ export function SegmentLink({
   );
 }
 
-export function SegmentButtonLink({
-  segment,
-  hash,
-  label,
-  variant = "primary",
-  size = "md",
-  className,
-}: {
-  segment: SegmentKey;
-  hash?: string;
-  label: string;
-  variant?: Variant;
-  size?: "md" | "sm";
-  className?: string;
-}) {
-  return (
-    <SegmentLink segment={segment} hash={hash} className={cn(buttonClass(variant, size), className)}>
-      <Roll>{label}</Roll>
-      <Chevron className="chev-shift" />
-    </SegmentLink>
-  );
-}
-
-export function TextAction({
+/** "↗ Label" link, the reference's inline call to action. */
+export function ArrowAction({
   children,
   className,
   ...props
@@ -171,108 +128,42 @@ export function TextAction({
     <button
       type="button"
       className={cn(
-        "group inline-flex items-center gap-1.5 rounded-[var(--radius-btn)] text-[15px] font-semibold text-seg-text underline-offset-4 hover:underline",
+        "group inline-flex items-center gap-2 rounded-md text-[16px] text-ink transition-colors duration-200 hover:text-seg-ink",
         className,
       )}
       {...props}
     >
+      <ArrowUpRight
+        aria-hidden="true"
+        strokeWidth={1.75}
+        className="size-4 text-seg-ink transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+      />
       {children}
-      <Chevron className="chev-shift size-4" />
     </button>
   );
 }
 
-export function Reveal({
-  children,
-  className,
-  delay = 0,
-  as: Tag = "div",
-  ...rest
-}: {
-  children: ReactNode;
-  className?: string;
-  delay?: number;
-  as?: "div" | "li" | "article";
-  id?: string;
-}) {
-  const ref = useRef<HTMLElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    if (!("IntersectionObserver" in window)) {
-      el.dataset.visible = "true";
-      return;
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLElement).dataset.visible = "true";
-            io.unobserve(entry.target);
-          }
-        }
-      },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+/** ⊹ bullet used throughout the reference's lists and dividers. */
+export function Sparkle({ className }: { className?: string }) {
   return (
-    <Tag
-      ref={ref as never}
-      className={cn("reveal", className)}
-      style={{ "--reveal-delay": `${delay}ms` } as CSSProperties}
-      {...rest}
-    >
+    <span aria-hidden="true" className={cn("inline-block leading-none text-faint-ink", className)}>
+      ⊹
+    </span>
+  );
+}
+
+/** Oswald label, e.g. "Ummah Pay Infrastructure" / "Developer-First" on the reference. */
+export function OswaldLabel({ children, className }: { children: ReactNode; className?: string }) {
+  return <p className={cn("font-num text-[24px] leading-[0.9] font-medium tracking-[0.02em]", className)}>{children}</p>;
+}
+
+/** Divider row: ⊹ ——— action, used under several sections. */
+export function DividerCta({ children }: { children?: ReactNode }) {
+  return (
+    <div className="flex items-center gap-6 py-16">
+      <Sparkle className="text-[20px]" />
+      <span className="h-px flex-1 bg-line" />
       {children}
-    </Tag>
-  );
-}
-
-/** Full-width section with Ummah-style rounded top that overlaps the previous one. */
-export function Panel({
-  id,
-  tone = "light",
-  className,
-  innerClassName,
-  children,
-  labelledBy,
-  overlap = true,
-}: {
-  id?: string;
-  tone?: "light" | "page" | "dark" | "tint";
-  className?: string;
-  innerClassName?: string;
-  children: ReactNode;
-  labelledBy?: string;
-  overlap?: boolean;
-}) {
-  const { segment } = useSite();
-  const dark = tone === "dark";
-  const navy = dark && segment !== "business";
-  return (
-    <section
-      id={id}
-      aria-labelledby={labelledBy}
-      data-theme={dark ? "dark" : undefined}
-      data-tone={navy ? "navy" : undefined}
-      className={cn(
-        "relative",
-        overlap && "-mt-8 rounded-t-[var(--radius-panel)]",
-        tone === "light" && "bg-surface",
-        tone === "page" && "bg-page",
-        tone === "tint" && "bg-page bg-[linear-gradient(var(--tint),var(--tint))]",
-        dark && (navy ? "bg-navy text-fg" : "bg-[#121214] text-fg"),
-        className,
-      )}
-    >
-      <div className={cn("mx-auto w-full max-w-[1280px] px-5 sm:px-8", innerClassName)}>{children}</div>
-    </section>
-  );
-}
-
-export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <p className={cn("text-[13px] font-semibold tracking-[0.02em] text-seg-text", className)}>{children}</p>
+    </div>
   );
 }

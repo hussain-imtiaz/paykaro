@@ -5,11 +5,13 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { SERVICE_ORDER, demos, info, services, type ServiceKey } from "@/lib/content";
 import { cn } from "@/lib/utils";
 import { useSite, type DialogState } from "./site-context";
-import { ActionButton, Chevron, serviceIcons } from "./primitives";
+import { ArrowUpRight, PillButton, serviceIcons } from "./primitives";
+import { getLenis } from "@/lib/smooth-scroll";
+import { useEffect } from "react";
 
 function ServiceList({ keys, onPick }: { keys: ServiceKey[]; onPick: (k: ServiceKey) => void }) {
   return (
-    <ul className="divide-y divide-hairline overflow-hidden rounded-2xl border border-hairline">
+    <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line">
       {keys.map((k) => {
         const Icon = serviceIcons[k];
         return (
@@ -17,21 +19,21 @@ function ServiceList({ keys, onPick }: { keys: ServiceKey[]; onPick: (k: Service
             <button
               type="button"
               onClick={() => onPick(k)}
-              className="group flex w-full items-center gap-3 px-4 py-3.5 text-left text-[15px] font-semibold hover:bg-page"
+              className="group flex w-full items-center gap-3 px-4 py-3.5 text-left text-[15px] font-semibold hover:bg-paper"
             >
               <span
                 className={cn(
                   "flex size-9 items-center justify-center rounded-xl",
-                  services[k].planned ? "bg-page text-fg-muted" : "bg-seg-fill text-seg-on",
+                  services[k].planned ? "bg-paper text-muted-ink" : "bg-seg-fill text-seg-on",
                 )}
               >
                 <Icon className="size-4" strokeWidth={1.75} aria-hidden="true" />
               </span>
               <span className="flex-1">
                 {services[k].short}
-                {services[k].planned && <span className="ml-2 text-[12px] font-medium text-fg-muted">Planned</span>}
+                {services[k].planned && <span className="ml-2 text-[12px] font-medium text-muted-ink">Planned</span>}
               </span>
-              <Chevron className="chev-shift text-fg-muted" />
+              <ArrowUpRight className="size-4 text-faint-ink" strokeWidth={1.75} aria-hidden="true" />
             </button>
           </li>
         );
@@ -41,7 +43,7 @@ function ServiceList({ keys, onPick }: { keys: ServiceKey[]; onPick: (k: Service
 }
 
 function Note({ children }: { children: React.ReactNode }) {
-  return <p className="rounded-xl bg-page p-4 text-[13px] leading-relaxed text-fg-muted">{children}</p>;
+  return <p className="rounded-xl bg-paper p-4 text-[13px] leading-relaxed text-muted-ink">{children}</p>;
 }
 
 function Body({ state }: { state: Exclude<DialogState, null> }) {
@@ -58,16 +60,16 @@ function Body({ state }: { state: Exclude<DialogState, null> }) {
           <Icon className="size-5" strokeWidth={1.75} aria-hidden="true" />
         </span>
         <div>
-          <p className="text-[13px] font-semibold text-seg-text">{s.tag}</p>
+          <p className="text-[13px] font-semibold text-seg-ink">{s.tag}</p>
           <DialogTitle className="mt-1 text-[28px] leading-tight font-semibold">{s.short}</DialogTitle>
         </div>
-        <DialogDescription className="text-[16px] leading-relaxed text-fg-muted">{s.detail}</DialogDescription>
+        <DialogDescription className="text-[16px] leading-relaxed text-muted-ink">{s.detail}</DialogDescription>
         <div>
           <h3 className="text-[15px] font-semibold">Before you get started</h3>
           <ol className="mt-3 space-y-2">
             {s.steps.map((t, i) => (
               <li key={t} className="flex gap-3 text-[15px] leading-relaxed">
-                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-page font-heading text-[12px] font-semibold">
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-paper font-heading text-[12px] font-semibold">
                   {i + 1}
                 </span>
                 {t}
@@ -80,7 +82,7 @@ function Body({ state }: { state: Exclude<DialogState, null> }) {
           be made on this website.
         </Note>
         {demoKey && (
-          <ActionButton className="justify-self-start" label="Explore the walkthrough" onClick={() => showDemo(demoKey)} />
+          <PillButton className="justify-self-start" size="lg" label="Explore the walkthrough" onClick={() => showDemo(demoKey)} />
         )}
       </>
     );
@@ -90,9 +92,9 @@ function Body({ state }: { state: Exclude<DialogState, null> }) {
     const d = info[state.key];
     return (
       <>
-        <p className="text-[13px] font-semibold text-seg-text">{d.label}</p>
+        <p className="text-[13px] font-semibold text-seg-ink">{d.label}</p>
         <DialogTitle className="-mt-2 text-[28px] leading-tight font-semibold">{d.title}</DialogTitle>
-        <DialogDescription className="text-[16px] leading-relaxed text-fg-muted">{d.body}</DialogDescription>
+        <DialogDescription className="text-[16px] leading-relaxed text-muted-ink">{d.body}</DialogDescription>
         <ul className="space-y-2.5">
           {d.bullets.map((b) => (
             <li key={b} className="flex gap-3 text-[15px] leading-relaxed">
@@ -109,7 +111,7 @@ function Body({ state }: { state: Exclude<DialogState, null> }) {
   if (state.type === "all-services") {
     return (
       <>
-        <p className="text-[13px] font-semibold text-seg-text">The PayKaro service portfolio</p>
+        <p className="text-[13px] font-semibold text-seg-ink">The PayKaro service portfolio</p>
         <DialogTitle className="-mt-2 text-[28px] leading-tight font-semibold">Everyday possibilities.</DialogTitle>
         <DialogDescription className="sr-only">Choose a service to read its details.</DialogDescription>
         <ServiceList keys={SERVICE_ORDER} onPick={(k) => openDialog({ type: "service", key: k })} />
@@ -124,7 +126,7 @@ function Body({ state }: { state: Exclude<DialogState, null> }) {
     );
     return (
       <>
-        <p className="text-[13px] font-semibold text-seg-text">Find your way</p>
+        <p className="text-[13px] font-semibold text-seg-ink">Find your way</p>
         <DialogTitle className="-mt-2 text-[28px] leading-tight font-semibold">What can we help you find?</DialogTitle>
         <DialogDescription className="sr-only">Type to filter PayKaro services.</DialogDescription>
         <label className="grid gap-2 text-[14px] font-semibold">
@@ -135,14 +137,14 @@ function Body({ state }: { state: Exclude<DialogState, null> }) {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Try bills, cash or transfers"
-            className="h-12 rounded-[var(--radius-btn)] border border-input bg-surface px-4 text-[16px] font-normal outline-none focus-visible:outline-2 focus-visible:outline-offset-2"
+            className="h-12 rounded-full border border-input bg-card px-4 text-[16px] font-normal outline-none focus-visible:outline-2 focus-visible:outline-offset-2"
           />
         </label>
         <div aria-live="polite">
           {matches.length ? (
             <ServiceList keys={matches} onPick={(k) => openDialog({ type: "service", key: k })} />
           ) : (
-            <p className="rounded-xl bg-page p-4 text-[15px] text-fg-muted">
+            <p className="rounded-xl bg-paper p-4 text-[15px] text-muted-ink">
               No matching services. Try “payments”, “cash” or “transfer”.
             </p>
           )}
@@ -153,9 +155,9 @@ function Body({ state }: { state: Exclude<DialogState, null> }) {
 
   return (
     <div lang="ur" dir="rtl" className="grid gap-4 text-right">
-      <p className="text-[14px] font-semibold text-seg-text">پے کرو</p>
+      <p className="text-[14px] font-semibold text-seg-ink">پے کرو</p>
       <DialogTitle className="text-[30px] leading-snug font-semibold">بینکاری، آسانی سے۔</DialogTitle>
-      <DialogDescription className="text-[17px] leading-loose text-fg-muted">
+      <DialogDescription className="text-[17px] leading-loose text-muted-ink">
         رقم بھیجنے، بل ادا کرنے اور نقد رقم کی سہولیات کے بارے میں جانیں۔
       </DialogDescription>
       <ul className="space-y-2 text-[16px] leading-loose">
@@ -170,12 +172,19 @@ function Body({ state }: { state: Exclude<DialogState, null> }) {
 
 export function SiteDialogs() {
   const { dialog, closeDialog, resolveDialogFocus } = useSite();
+  useEffect(() => {
+    const lenis = getLenis();
+    if (!lenis) return;
+    if (dialog) lenis.stop();
+    else lenis.start();
+  }, [dialog]);
   const stateKey = dialog ? `${dialog.type}-${"key" in dialog ? dialog.key : ""}` : "none";
   return (
     <Dialog open={!!dialog} onOpenChange={(open) => !open && closeDialog()}>
       <DialogContent
         finalFocus={resolveDialogFocus}
-        className="max-h-[calc(100svh-2rem)] gap-5 overflow-y-auto rounded-[var(--radius-card)] bg-surface p-7 text-fg ring-hairline sm:max-w-[520px] sm:p-8"
+        className="max-h-[calc(100svh-2rem)] gap-5 overflow-y-auto rounded-[var(--radius-card)] bg-card p-7 text-ink ring-line sm:max-w-[520px] sm:p-9"
+        data-lenis-prevent
       >
         {dialog && <Body key={stateKey} state={dialog} />}
       </DialogContent>
