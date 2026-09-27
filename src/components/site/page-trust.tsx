@@ -209,7 +209,13 @@ function RevenueRing() {
               <text x={x} y={y + 5} textAnchor="middle" fontSize="15" fill="#fff" fontFamily="var(--font-oswald)">
                 {String(i + 1).padStart(2, "0")}
               </text>
-              <text x={320 + Math.cos(a) * 305} y={320 + Math.sin(a) * 305 + 7} textAnchor="middle" fontSize="21" fill="rgba(255,255,255,0.8)">
+              <text
+                x={320 + Math.cos(a) * 300}
+                y={320 + Math.sin(a) * 300 + 7}
+                textAnchor={Math.cos(a) > 0.3 ? "start" : Math.cos(a) < -0.3 ? "end" : "middle"}
+                fontSize="21"
+                fill="rgba(255,255,255,0.8)"
+              >
                 {label}
               </text>
             </g>

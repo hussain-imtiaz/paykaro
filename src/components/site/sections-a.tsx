@@ -16,7 +16,8 @@ export function IconGradientDefs() {
   return (
     <svg width="0" height="0" className="absolute" aria-hidden="true">
       <defs>
-        <linearGradient id="seg-icon-grad" x1="0" y1="0" x2="0" y2="1">
+        {/* User-space units: straight strokes have a zero-width bounding box, which would make them invisible. */}
+        <linearGradient id="seg-icon-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="24">
           <stop offset="0%" style={{ stopColor: "var(--seg)" }} />
           <stop offset="100%" style={{ stopColor: "var(--seg)", stopOpacity: 0.35 }} />
         </linearGradient>
