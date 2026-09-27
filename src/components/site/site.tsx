@@ -1,5 +1,6 @@
 "use client";
 
+import { MotionConfig } from "motion/react";
 import { segments } from "@/lib/content";
 import type { Route } from "@/lib/routes";
 import { routeKey } from "@/lib/routes";
@@ -97,8 +98,10 @@ function Shell() {
 
 export function Site({ initialRoute }: { initialRoute: Route }) {
   return (
-    <SiteProvider initialRoute={initialRoute}>
-      <Shell />
-    </SiteProvider>
+    <MotionConfig reducedMotion="user">
+      <SiteProvider initialRoute={initialRoute}>
+        <Shell />
+      </SiteProvider>
+    </MotionConfig>
   );
 }

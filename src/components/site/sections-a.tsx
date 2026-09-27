@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotion } from "./use-reduced-motion";
 import { useEffect, useState } from "react";
 import { PaykaroLogo } from "@/components/brand/paykaro-logo";
 import { segments } from "@/lib/content";

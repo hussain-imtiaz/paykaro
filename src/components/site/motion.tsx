@@ -4,7 +4,6 @@ import {
   animate,
   motion,
   useInView,
-  useReducedMotion,
   useScroll,
   useTransform,
   type MotionValue,
@@ -13,6 +12,7 @@ import Lenis from "lenis";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { setLenis } from "@/lib/smooth-scroll";
+import { useReducedMotion } from "./use-reduced-motion";
 
 /** Framer's most common preset on the reference: spring, bounce 0.2, 0.4s. */
 export const SPRING = { type: "spring", bounce: 0.2, duration: 0.4 } as const;
@@ -87,7 +87,7 @@ export function ScrubHeadline({ children, className }: { children: ReactNode; cl
   const y = useTransform(scrollYProgress, [0, 1], [-shift, 0]);
   return (
     <div ref={ref} className={className}>
-      <motion.div style={reduce ? undefined : { scale, y }}>{children}</motion.div>
+      <motion.div style={reduce ? { scale: 1, y: 0 } : { scale, y }}>{children}</motion.div>
     </div>
   );
 }
@@ -146,7 +146,12 @@ export function ScrollHighlight({ text, className }: { text: string; className?:
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "end 0.45"] });
   const words = text.split(" ");
-  if (reduce) return <p className={className}>{text}</p>;
+  if (reduce)
+    return (
+      <p ref={ref} className={className}>
+        {text}
+      </p>
+    );
   return (
     <p ref={ref} className={className} aria-label={text}>
       {words.map((w, i) => (
@@ -197,7 +202,7 @@ export function ScrollDrift({ children, className, distance = 300 }: { children:
   const x = useTransform(scrollYProgress, [0, 1], [0, -distance]);
   return (
     <div ref={ref} className={cn("overflow-hidden", className)}>
-      <motion.div style={reduce ? undefined : { x }} className="flex w-max">
+      <motion.div style={reduce ? { x: 0 } : { x }} className="flex w-max">
         {children}
       </motion.div>
     </div>
@@ -205,9 +210,9 @@ export function ScrollDrift({ children, className, distance = 300 }: { children:
 }
 
 /** Background that zooms from 1.6 to 1 as its section scrolls through. */
-export function useSectionZoom(target: React.RefObject<HTMLElement | null>): MotionValue<number> | undefined {
+export function useSectionZoom(target: React.RefObject<HTMLElement | null>): MotionValue<number> | number {
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target, offset: ["start end", "end end"] });
   const scale = useTransform(scrollYProgress, [0, 1], [1.6, 1]);
-  return reduce ? undefined : scale;
+  return reduce ? 1 : scale;
 }

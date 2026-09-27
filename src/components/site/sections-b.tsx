@@ -1,7 +1,8 @@
 "use client";
 
 import { Check, RotateCcw } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotion } from "./use-reduced-motion";
 import { useState } from "react";
 import { PaykaroLogo } from "@/components/brand/paykaro-logo";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";

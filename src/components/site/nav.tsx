@@ -1,7 +1,8 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
-import { motion, useMotionValueEvent, useReducedMotion, useScroll } from "motion/react";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import { useReducedMotion } from "./use-reduced-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PaykaroLogo } from "@/components/brand/paykaro-logo";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";

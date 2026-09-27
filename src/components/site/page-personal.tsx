@@ -1,7 +1,8 @@
 "use client";
 
 import { ArrowLeftRight, Banknote, Fingerprint, LockKeyhole, QrCode, ReceiptText } from "lucide-react";
-import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll } from "motion/react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/react";
+import { useReducedMotion } from "./use-reduced-motion";
 import { useRef, useState } from "react";
 import { segments, services } from "@/lib/content";
 import { cn } from "@/lib/utils";

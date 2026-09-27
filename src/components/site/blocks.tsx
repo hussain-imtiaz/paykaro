@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useReducedMotion } from "./use-reduced-motion";
 import { useRef, type ReactNode } from "react";
 import { PaykaroLogo } from "@/components/brand/paykaro-logo";
 import { cn } from "@/lib/utils";
@@ -54,7 +55,7 @@ export function CenterHead({
     </>
   );
   return scrub ? (
-    <ScrubHeadline className={cn("px-4 text-center", className)}>{inner}</ScrubHeadline>
+    <ScrubHeadline className={cn("overflow-x-clip px-4 text-center", className)}>{inner}</ScrubHeadline>
   ) : (
     <Appear y={30} className={cn("px-4 text-center", className)}>
       {inner}
@@ -244,7 +245,7 @@ export function RisingPhone({ children, className }: { children: ReactNode; clas
   const rotate = useTransform(scrollYProgress, [0, 1], [8, 0]);
   return (
     <div ref={ref} className={className}>
-      <motion.div style={reduce ? undefined : { y, rotate }} className="flex justify-center">
+      <motion.div style={reduce ? { y: 0, rotate: 0 } : { y, rotate }} className="flex justify-center">
         {children}
       </motion.div>
     </div>
@@ -259,7 +260,7 @@ export function ParallaxBand({ src, alt, position, className }: { src: string; a
   const y = useTransform(scrollYProgress, [0, 1], ["-12%", "12%"]);
   return (
     <div ref={ref} className={cn("relative h-[60vh] min-h-[380px] overflow-hidden bg-night min-[810px]:h-[900px]", className)}>
-      <motion.div className="absolute inset-x-0 -inset-y-[14%]" style={reduce ? undefined : { y }}>
+      <motion.div className="absolute inset-x-0 -inset-y-[14%]" style={reduce ? { y: 0 } : { y }}>
         <Image src={src} alt={alt} fill sizes="100vw" className="object-cover" style={{ objectPosition: position }} />
       </motion.div>
     </div>

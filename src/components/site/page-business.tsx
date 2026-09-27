@@ -19,7 +19,8 @@ import {
   Tag,
   Zap,
 } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { AnimatePresence, motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { useReducedMotion } from "./use-reduced-motion";
 import { useRef, useState } from "react";
 import { PaykaroLogo } from "@/components/brand/paykaro-logo";
 import { segments, services } from "@/lib/content";
@@ -261,7 +262,7 @@ function CollectionsFan() {
                 <FanCard key={c.title} index={i} progress={scrollYProgress} reduce={!!reduce} {...c} />
               ))}
             </div>
-            <motion.div style={reduce ? undefined : { opacity: introOpacity }}>
+            <motion.div style={reduce ? { opacity: 1 } : { opacity: introOpacity }}>
               <p className="font-num text-[20px] tracking-[0.02em] text-white/60">{s.journeys[1].nav}</p>
               <h2 id="collections-title" className={cn(H2_LG, "mt-4")}>
                 {s.journeys[1].title[0]}
@@ -271,7 +272,7 @@ function CollectionsFan() {
               <p className={cn(LEAD, "mt-6 max-w-[440px] text-white/70")}>{s.journeys[1].copy}</p>
             </motion.div>
           </div>
-          <motion.div style={reduce ? undefined : { opacity: textOpacity, y: textY }} className={cn("text-center", reduce ? "mt-16" : "absolute inset-x-4 bottom-[8vh]")}>
+          <motion.div style={reduce ? { opacity: 1, y: 0 } : { opacity: textOpacity, y: textY }} className={cn("text-center", reduce ? "mt-16" : "absolute inset-x-4 bottom-[8vh]")}>
             <p className="text-[36px] leading-[0.95] font-medium tracking-[-0.01em] min-[810px]:text-[64px]">
               Collections for every way
               <br />

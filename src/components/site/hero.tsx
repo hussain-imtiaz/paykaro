@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
+import { useReducedMotion } from "./use-reduced-motion";
 import type { ReactNode } from "react";
 import { scrollToTarget } from "@/lib/smooth-scroll";
 import { cn } from "@/lib/utils";
@@ -15,7 +16,7 @@ export type HeroAction = { label: string; onClick: () => void };
 function useEntrance() {
   const reduce = useReducedMotion();
   return <T extends object>(initial: T, transition: object) =>
-    reduce ? {} : { initial, animate: Object.fromEntries(Object.keys(initial).map((k) => [k, k === "scale" || k === "opacity" ? 1 : 0])), transition };
+    ({ initial, animate: Object.fromEntries(Object.keys(initial).map((k) => [k, k === "scale" || k === "opacity" ? 1 : 0])), transition: reduce ? { duration: 0 } : transition });
 }
 
 /** Soft segment-coloured light ribbon drifting across the hero, like the reference's "Light source". */
@@ -82,7 +83,7 @@ function LightBeams() {
     { left: "92%", width: "10%", opacity: 0.12, delay: 0.65 },
   ];
   return (
-    <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20 overflow-hidden" style={reduce ? undefined : { y: drift }}>
+    <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20 overflow-hidden" style={reduce ? { y: 0 } : { y: drift }}>
       <div className="absolute inset-0" style={{ background: "radial-gradient(90% 70% at 70% 10%, color-mix(in srgb, var(--seg) 22%, transparent), transparent 70%)" }} />
       {beams.map((b) => (
         <motion.span
