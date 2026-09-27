@@ -21,12 +21,16 @@ export interface Person {
 }
 
 export const company = {
-  vision: ph("Vision statement", "One or two sentences describing PayKaro’s vision."),
-  mission: ph("Mission statement", "One or two sentences describing PayKaro’s mission."),
+  /** Brief s1: brand proposition and core promise. */
+  proposition:
+    "A world-class digital financial experience built specifically for Pakistan. Not a conventional bank app compressed onto a phone, and not a crowded wallet catalogue.",
+  promise: "Help every customer reach what they came to do quickly, understand what is happening, stay in control and always know the next step.",
   nameFact: "The PayKaro mark sets the English “pay” beside the Urdu “کرو” (karo, “do”).",
   nameStory: ph("Story behind the name", "A short paragraph on why the company is called PayKaro."),
-  why: ph("Why PayKaro exists", "A paragraph on the problem PayKaro set out to solve."),
-  conviction: ph("Founding conviction", "A paragraph on the belief the company was founded on."),
+  everyday:
+    "Everyday money movement, payments and financial tasks should feel immediate, understandable, self-service and human, without depending on branches or routine manual intervention.",
+  character: "Premium but accessible. Modern without being futuristic for its own sake. Confident, calm and trustworthy.",
+  local: "Pakistani context, language, behaviours and everyday use cases, executed to an international design standard.",
   details: [
     { label: "Registered company name", value: ph("Registered company name", "The legal entity behind PayKaro.") },
     { label: "Regulatory status", value: ph("Regulatory status", "Licences or approvals, exactly as issued, with the regulator’s name.") },
@@ -50,6 +54,24 @@ export const chairman = {
   ] as Copy[],
   signOff: ph("Sign-off", "For example: the Chairman’s signature line, and the date of the message."),
 };
+
+/** Security & Trust page. The brief asks for regulatory status and disclosures but keeps partner names internal. */
+export const disclosures = [
+  { label: "Regulatory status", value: ph("Regulatory status", "Licences or approvals, exactly as issued, with the regulator’s name.") },
+  { label: "Remittance and Secured Payment", value: "Offered subject to applicable approvals and arrangements (Remittance) and applicable regulatory approval (Secured Payment)." },
+  { label: "Wealth and savings", value: "Investment and savings products are offered through regulated partners." },
+  { label: "Digital Fraud Insurance", value: "Optional protection provided through a licensed insurance partner." },
+  { label: "Partner names", value: ph("Partner disclosures", "Names of the regulated and licensed partners, once approved for publication.") },
+  { label: "Privacy policy", value: ph("Privacy policy", "The approved privacy policy, or a link to it.") },
+  { label: "Terms of use", value: ph("Terms of use", "The approved website and product terms.") },
+];
+
+/** Get Help page. */
+export const support = [
+  { label: "Customer support", value: ph("Customer support channels", "In-app help, phone, email and hours, as approved.") },
+  { label: "Report fraud or a lost card", value: ph("Fraud reporting channel", "The dedicated, always-on channel for reporting fraud.") },
+  { label: "Complaints", value: ph("Complaints process", "How to raise a complaint, and how to escalate it.") },
+];
 
 const person = (group: string, n: number): Person => ({
   name: ph(`${group} ${n}: name`, "Full name."),

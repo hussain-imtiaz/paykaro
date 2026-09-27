@@ -69,106 +69,20 @@ export function Appear({ children, className, delay = 0, y = 0, scale = 1, amoun
 }
 
 /**
- * Section headline that scrubs from scale 1.15 / y -400 to its resting place while the
- * section scrolls from the bottom of the viewport to about a quarter from the top.
+ * Section headline that settles into place as its section scrolls in. The reference moves it
+ * from scale 1.15 / y -400px; the PayKaro brief (s7) rules out motion that slows reading, so the
+ * travel is short enough that the headline is legible from the first frame it is on screen.
  */
 export function ScrubHeadline({ children, className }: { children: ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "start 0.27"] });
-  const [shift, setShift] = useState(400);
-  useEffect(() => {
-    const update = () => setShift(window.innerWidth < 810 ? 160 : 400);
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, []);
-  const scale = useTransform(scrollYProgress, [0, 1], [1.15, 1]);
-  const y = useTransform(scrollYProgress, [0, 1], [-shift, 0]);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "start 0.45"] });
+  const scale = useTransform(scrollYProgress, [0, 1], [1.04, 1]);
+  const y = useTransform(scrollYProgress, [0, 1], [48, 0]);
   return (
     <div ref={ref} className={className}>
       <motion.div style={reduce ? { scale: 1, y: 0 } : { scale, y }}>{children}</motion.div>
     </div>
-  );
-}
-
-/** Word-by-word reveal (opacity + 10px rise, staggered). */
-export function WordReveal({ text, className, as = "h3" }: { text: string; className?: string; as?: "h2" | "h3" }) {
-  const reduce = useReducedMotion();
-  const Tag = motion[as];
-  const lines = text.split("\n");
-  if (reduce) {
-    const Plain = as;
-    return (
-      <Plain className={className}>
-        {lines.map((l, i) => (
-          <span key={i} className="block">
-            {l}
-          </span>
-        ))}
-      </Plain>
-    );
-  }
-  let index = 0;
-  return (
-    <Tag
-      className={className}
-      initial="hidden"
-      whileInView="shown"
-      viewport={{ once: true, amount: 0.6 }}
-      aria-label={text.replace(/\n/g, " ")}
-    >
-      {lines.map((line, li) => (
-        <span key={li} className="block" aria-hidden="true">
-          {line.split(" ").map((w) => {
-            const i = index++;
-            return (
-              <motion.span
-                key={`${w}-${i}`}
-                className="inline-block"
-                variants={{ hidden: { opacity: 0, y: 10 }, shown: { opacity: 1, y: 0 } }}
-                transition={{ ...SPRING, duration: 0.45, delay: i * 0.05 }}
-              >
-                {w}
-                {"\u00a0"}
-              </motion.span>
-            );
-          })}
-        </span>
-      ))}
-    </Tag>
-  );
-}
-
-/** Words brighten one by one as the block scrolls through the viewport, as on the reference's story page. */
-export function ScrollHighlight({ text, className }: { text: string; className?: string }) {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "end 0.45"] });
-  const words = text.split(" ");
-  if (reduce)
-    return (
-      <p ref={ref} className={className}>
-        {text}
-      </p>
-    );
-  return (
-    <p ref={ref} className={className} aria-label={text}>
-      {words.map((w, i) => (
-        <HighlightWord key={`${w}-${i}`} progress={scrollYProgress} range={[i / words.length, (i + 1) / words.length]}>
-          {w}
-        </HighlightWord>
-      ))}
-    </p>
-  );
-}
-
-function HighlightWord({ children, progress, range }: { children: string; progress: MotionValue<number>; range: [number, number] }) {
-  const opacity = useTransform(progress, range, [0.22, 1]);
-  return (
-    <motion.span aria-hidden="true" style={{ opacity }}>
-      {children}{" "}
-    </motion.span>
   );
 }
 

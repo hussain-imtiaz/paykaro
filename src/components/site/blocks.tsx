@@ -7,7 +7,6 @@ import { useRef, type ReactNode } from "react";
 import { PaykaroLogo } from "@/components/brand/paykaro-logo";
 import { cn } from "@/lib/utils";
 import { Appear, ScrubHeadline, SPRING } from "./motion";
-import { PartnerLogo, type PartnerKey } from "./partner-logo";
 import { Container, icons, PillButton } from "./primitives";
 import type { LucideIcon } from "lucide-react";
 
@@ -63,7 +62,7 @@ export function CenterHead({
   );
 }
 
-export type Feature = { icon: LucideIcon; title: string; copy: string; logo?: PartnerKey };
+export type Feature = { icon: LucideIcon; title: string; copy: string };
 
 /** Ummah's "What your … gives you" grid: white cards, round icon well, two-line title. */
 export function FeatureGrid({ items, className }: { items: Feature[]; className?: string }) {
@@ -76,22 +75,9 @@ export function FeatureGrid({ items, className }: { items: Feature[]; className?
           </span>
           <h3 className="mt-auto pt-10 text-[20px] leading-[1.1] font-medium">{f.title}</h3>
           <p className="mt-3 font-ui text-[15px] leading-[1.2] text-muted-ink">{f.copy}</p>
-          {f.logo && <PartnerLogo partner={f.logo} className="mt-4 h-9" />}
         </Appear>
       ))}
     </ul>
-  );
-}
-
-/** "Works with" row of official rail logos. */
-export function RailLogos({ items, className, label = "Works through", dark }: { items: PartnerKey[]; className?: string; label?: string; dark?: boolean }) {
-  return (
-    <div className={cn("flex flex-wrap items-center gap-3", className)}>
-      <span className={cn("text-[14px]", dark ? "text-white/60" : "text-faint-ink")}>{label}</span>
-      {items.map((k) => (
-        <PartnerLogo key={k} partner={k} chip className="h-12 w-auto" />
-      ))}
-    </div>
   );
 }
 

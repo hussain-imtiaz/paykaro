@@ -1,22 +1,13 @@
-export const SEGMENT_KEYS = ["personal", "business", "family", "agri", "assisted"] as const;
+/**
+ * Site content, from the PayKaro Website & Mobile App Experience Brief (agency-safe edition).
+ * Service names and propositions are quoted from the brief; everything else is outcome-led copy
+ * built on them. The brief keeps partner names, limits, pricing, roadmap dates and onboarding/KYC
+ * logic internal, so none of those appear here.
+ */
+
+/** Audience pathways (brief §6). Kept under the `segment` name because it drives the colour tokens. */
+export const SEGMENT_KEYS = ["individuals", "business", "partners"] as const;
 export type SegmentKey = (typeof SEGMENT_KEYS)[number];
-
-export type ServiceKey = "transfer" | "bills" | "qr" | "atm" | "cash" | "takaful";
-export type DemoKey = "transfer" | "bills" | "qr" | "atm";
-export type ConceptKind =
-  | "transfer"
-  | "bills"
-  | "cash"
-  | "scan"
-  | "collection"
-  | "network"
-  | "household"
-  | "family"
-  | "access"
-  | "trade"
-  | "help";
-
-export type InfoKey = "retail" | "fees" | "website" | "accessibility" | "login" | "onboarding";
 
 export function isSegmentKey(value: string | undefined | null): value is SegmentKey {
   return !!value && (SEGMENT_KEYS as readonly string[]).includes(value);
@@ -26,483 +17,299 @@ export function segmentPath(key: SegmentKey) {
   return `/${key}`;
 }
 
+export const SERVICE_ORDER = [
+  "wallet",
+  "cards",
+  "remittance",
+  "wearpay",
+  "secured",
+  "dashboard",
+  "wealth",
+  "supersavers",
+  "premium",
+  "rewards",
+  "marketplace",
+  "fraud",
+  "business",
+  "bizanalytics",
+  "merchantanalytics",
+  "platform",
+] as const;
+export type ServiceKey = (typeof SERVICE_ORDER)[number];
+
+export type FamilyKey = "everyday" | "grow" | "extras" | "forbusiness" | "forpartners";
+
 export interface Service {
-  short: string;
-  title: string;
-  tag: string;
-  description: string;
-  detail: string;
-  steps: string[];
-  planned?: boolean;
+  name: string;
+  /** Verbatim agency-safe proposition from the brief. */
+  proposition: string;
+  /** Short outcome line for cards and lists. */
+  outcome: string;
+  family: FamilyKey;
+  /** Conditions the brief attaches to the proposition. */
+  qualifier?: string;
+  optional?: boolean;
 }
 
 export const services: Record<ServiceKey, Service> = {
-  transfer: {
-    short: "Domestic money transfers",
-    title: "Money that reaches further.",
-    tag: "Send & receive",
-    description: "Send money across Pakistan. Stay connected to the people and payments that matter.",
-    detail: "PayKaro’s service portfolio includes domestic interbank money transfers (IBFT) via 1LINK.",
-    steps: [
-      "Confirm the recipient’s bank and account details.",
-      "Check the recipient’s name, amount and any applicable charges.",
-      "Keep the transaction reference for your records.",
-    ],
+  wallet: {
+    name: "PayKaro Wallet",
+    proposition: "Everyday digital wallet for receiving, holding, paying and moving money.",
+    outcome: "Receive, hold, pay and move money from one place.",
+    family: "everyday",
   },
-  bills: {
-    short: "Bill payments",
-    title: "One less thing on your list.",
-    tag: "Everyday essentials",
-    description: "Take care of your bills through PayKaro, and get back to the rest of your day.",
-    detail:
-      "Bill payments through 1LINK / Raast are included in the PayKaro service portfolio. Biller coverage and payment availability need to be confirmed before you pay.",
-    steps: [
-      "Have your bill or consumer reference ready.",
-      "Check the biller, amount due and reference carefully.",
-      "Keep your payment receipt and transaction reference.",
-    ],
+  cards: {
+    name: "PayKaro Cards",
+    proposition: "Physical and virtual payment cards with digital controls.",
+    outcome: "Physical and virtual cards you control from the app.",
+    family: "everyday",
   },
-  qr: {
-    short: "Raast QR payments",
-    title: "Scan. Pay. Carry on.",
-    tag: "Payments, simplified",
-    description: "A simpler way to pay at the counter, with Raast QR in the PayKaro service offering.",
-    detail:
-      "PayKaro’s service portfolio includes Raast QR payments, connecting customers and participating merchants through QR-based payments.",
-    steps: [
-      "Use the QR code displayed by a participating merchant.",
-      "Check that the merchant name and payment amount are correct.",
-      "Confirm the payment result before leaving the counter.",
-    ],
+  remittance: {
+    name: "PayKaro Remittance",
+    proposition: "Digital receipt of eligible inward home remittances, subject to applicable approvals and arrangements.",
+    outcome: "Money from family abroad, received digitally.",
+    family: "everyday",
+    qualifier: "Subject to applicable approvals and arrangements",
   },
-  atm: {
-    short: "Micro ATM services",
-    title: "Your cash. A little closer.",
-    tag: "Neighbourhood access",
-    description: "Discover cash access through Micro ATM devices at participating retail locations.",
-    detail:
-      "Micro ATM devices and biometric verification form part of PayKaro’s assisted service portfolio. Availability, supported accounts and transaction requirements must be confirmed at a participating location.",
-    steps: [
-      "Confirm that the location offers the service you need.",
-      "Check supported account and identification requirements.",
-      "Review any charges and keep your transaction receipt.",
-    ],
+  wearpay: {
+    name: "PayKaro Wear & Pay",
+    proposition: "Contactless payment experiences through supported devices and wearables.",
+    outcome: "Tap to pay with a supported device or wearable.",
+    family: "everyday",
+    qualifier: "Supported devices and wearables",
   },
-  cash: {
-    short: "Business cash collection",
-    title: "Keep your business moving.",
-    tag: "For your business",
-    description: "Explore cash collection services built around the everyday needs of businesses.",
-    detail:
-      "Cash collection for businesses is included in PayKaro’s service portfolio. Collection arrangements, eligibility, locations and charges are subject to confirmation.",
-    steps: [
-      "Identify your business’s cash collection requirements.",
-      "Confirm available locations and collection arrangements.",
-      "Agree the applicable terms before starting the service.",
-    ],
+  secured: {
+    name: "PayKaro Secured Payment",
+    proposition: "Protected digital-commerce payment experience, subject to applicable regulatory approval.",
+    outcome: "A protected way to pay online.",
+    family: "everyday",
+    qualifier: "Subject to applicable regulatory approval",
   },
-  takaful: {
-    short: "Micro Takaful",
-    title: "Consider the bigger picture.",
-    tag: "Looking ahead",
-    description: "Micro Takaful is part of PayKaro’s product roadmap. It is not offered on this website.",
-    detail:
-      "Micro Takaful is listed in PayKaro’s product strategy and launch roadmap. Provider details, coverage, exclusions, contributions and availability are not confirmed on this website. No coverage is offered or purchased here.",
-    steps: [
-      "Check product availability and the named provider.",
-      "Read the policy, including eligibility and exclusions.",
-      "Confirm the contribution and claims process before enrolment.",
-    ],
-    planned: true,
+  dashboard: {
+    name: "Money Dashboard",
+    proposition: "Personal money management, spending visibility and financial insights.",
+    outcome: "See where your money goes, and what to do next.",
+    family: "grow",
+  },
+  wealth: {
+    name: "PayKaro Wealth",
+    proposition: "Access to selected investment and savings products offered through regulated partners.",
+    outcome: "Selected investment and savings products, in the same app.",
+    family: "grow",
+    qualifier: "Offered through regulated partners",
+  },
+  supersavers: {
+    name: "Super Savers",
+    proposition: "Savings-oriented proposition connecting customers with eligible partner offerings.",
+    outcome: "Put money aside with eligible partner offerings.",
+    family: "grow",
+    qualifier: "Eligible partner offerings",
+  },
+  premium: {
+    name: "PayKaro Premium",
+    proposition: "Optional enhanced membership with additional benefits and privileges.",
+    outcome: "An optional membership with extra benefits.",
+    family: "extras",
+    optional: true,
+  },
+  rewards: {
+    name: "PayKaro Rewards",
+    proposition: "Loyalty, rewards and promotional benefits linked to customer engagement.",
+    outcome: "Rewards and benefits for the way you use PayKaro.",
+    family: "extras",
+  },
+  marketplace: {
+    name: "PayKaro Marketplace",
+    proposition: "Curated partner services accessible from within the PayKaro experience.",
+    outcome: "Curated partner services, inside PayKaro.",
+    family: "extras",
+  },
+  fraud: {
+    name: "Digital Fraud Insurance",
+    proposition: "Optional protection proposition provided through a licensed insurance partner.",
+    outcome: "Optional protection, through a licensed insurance partner.",
+    family: "extras",
+    qualifier: "Provided through a licensed insurance partner",
+    optional: true,
+  },
+  business: {
+    name: "PayKaro Business",
+    proposition: "Digital payments, collections and practical business-management tools for merchants and SMEs.",
+    outcome: "Payments, collections and everyday tools for merchants and SMEs.",
+    family: "forbusiness",
+  },
+  bizanalytics: {
+    name: "PayKaro Business Analytics",
+    proposition: "Financial insights and reporting for businesses.",
+    outcome: "Financial insights and reporting for your business.",
+    family: "forbusiness",
+  },
+  merchantanalytics: {
+    name: "PayKaro Merchant Analytics",
+    proposition: "Payment, settlement and performance visibility for merchants.",
+    outcome: "See payments, settlement and performance at a glance.",
+    family: "forbusiness",
+  },
+  platform: {
+    name: "PayKaro APIs / Platform Services",
+    proposition: "Controlled connectivity and embedded-payment capabilities for approved businesses and institutions.",
+    outcome: "Embedded payments and connectivity for approved partners.",
+    family: "forpartners",
+    qualifier: "For approved businesses and institutions",
   },
 };
 
-/** Service name for mid-sentence use; Raast and Micro are proper nouns and keep their capitals. */
-export function serviceCtaName(key: ServiceKey) {
-  const name = services[key].short;
-  return /^(Raast|Micro)\b/.test(name) ? name : name.charAt(0).toLowerCase() + name.slice(1);
-}
+export const families: { key: FamilyKey; label: string; title: string; copy: string }[] = [
+  { key: "everyday", label: "Everyday money", title: "Everyday money", copy: "Receive, hold, pay and move money, on your phone, your card or your wrist." },
+  { key: "grow", label: "Understand & grow", title: "Understand and grow", copy: "See where your money goes, then put it to work." },
+  { key: "extras", label: "Membership & extras", title: "Membership and extras", copy: "Optional benefits, rewards, partner services and protection." },
+  { key: "forbusiness", label: "For business", title: "For merchants and SMEs", copy: "Take payments, collect and see how the business is doing." },
+  { key: "forpartners", label: "For partners", title: "For partners and institutions", copy: "Connect approved businesses and institutions to PayKaro." },
+];
 
-export const SERVICE_ORDER: ServiceKey[] = ["transfer", "bills", "qr", "atm", "cash", "takaful"];
+export const servicesIn = (f: FamilyKey) => SERVICE_ORDER.filter((k) => services[k].family === f);
 
 export interface Journey {
   id: string;
   nav: string;
-  menuLabel: string;
   title: [string, string];
   copy: string;
-  points: string[];
   services: ServiceKey[];
-  partner?: boolean;
-  concept: { kind: ConceptKind; service: ServiceKey; caption: string };
 }
 
 export interface Segment {
   key: SegmentKey;
   label: string;
+  /** Pathway name as the brief phrases it. */
+  pathway: string;
   eyebrow: string;
-  title: [string, string, string];
+  title: string[];
   description: string;
-  image: string;
-  imagePosition: string;
-  alt: string;
-  heading: [string, string];
-  intro: string;
-  products: [ServiceKey, ServiceKey, ServiceKey];
-  demo: DemoKey;
-  menuTitle: string;
   cardDescription: string;
-  journeysTitle: [string, string];
-  journeysIntro: string;
-  photo: { image: string; position: string; alt: string; label: string; note: string };
-  journeys: [Journey, Journey, Journey];
+  menuTitle: string;
+  journeys: Journey[];
+  services: ServiceKey[];
 }
 
 export const segments: Record<SegmentKey, Segment> = {
-  personal: {
-    key: "personal",
-    label: "Personal",
-    eyebrow: "PayKaro Personal",
-    title: ["Life moves.", "Banking should", "move with you."],
-    description:
-      "For the bills, the little plans, and the people who matter. Discover simpler ways to manage your everyday money.",
-    image: "/images/personal.webp",
-    imagePosition: "58% 40%",
-    alt: "A Pakistani father and his adult daughter looking at a phone together at home",
-    heading: ["Everyday essentials.", "Thoughtfully connected."],
-    intro: "From sending money home to taking care of the bills. Practical services for the way you live.",
-    products: ["transfer", "bills", "qr"],
-    demo: "transfer",
+  individuals: {
+    key: "individuals",
+    label: "Individuals",
+    pathway: "Individuals",
+    eyebrow: "PayKaro for Individuals",
+    title: ["Everyday money.", "One wallet.", "Your control."],
+    description: "Receive, hold, pay and move money from one everyday wallet, with cards, savings and insights close by.",
+    cardDescription: "An everyday wallet, cards with digital controls, money from home, and insight into where it all goes.",
     menuTitle: "For your everyday.",
-    cardDescription: "Send money, pay everyday bills and explore simpler payments for the way you live.",
-    journeysTitle: ["Made for the way", "you live."],
-    journeysIntro: "Three everyday moments, and the PayKaro services that fit around them.",
-    photo: {
-      image: "/images/business.webp",
-      position: "70% 50%",
-      alt: "A shopkeeper checking a phone at the counter of a neighbourhood store",
-      label: "At the counter",
-      note: "Raast QR at participating merchants.",
-    },
+    services: ["wallet", "cards", "remittance", "wearpay", "secured", "dashboard", "wealth", "supersavers", "premium", "rewards", "marketplace", "fraud"],
     journeys: [
-      {
-        id: "transfers",
-        nav: "Transfers & payments",
-        menuLabel: "Send & receive money",
-        title: ["Send money.", "Stay connected."],
-        copy: "A little help for someone at home. A payment that keeps the day moving. Explore domestic transfers and Raast QR for everyday connections.",
-        points: ["Domestic transfers through 1LINK", "Raast QR at participating merchants"],
-        services: ["transfer", "qr"],
-        concept: { kind: "transfer", service: "transfer", caption: "Move a little closer." },
-      },
-      {
-        id: "essentials",
-        nav: "Bills & essentials",
-        menuLabel: "Everyday bill payments",
-        title: ["The bills, sorted.", "The day, yours."],
-        copy: "Make room for the things you would rather be doing. Get to know PayKaro’s bill payment services and the details to check before paying.",
-        points: ["Bill payments through 1LINK / Raast", "Keep your bill reference and receipt together"],
-        services: ["bills"],
-        concept: { kind: "bills", service: "bills", caption: "Room for your day." },
-      },
-      {
-        id: "cash-access",
-        nav: "Cash access",
-        menuLabel: "Cash in your neighbourhood",
-        title: ["Everyday cash.", "A familiar counter."],
-        copy: "Some things are easier with a person to help. Discover the Micro ATM approach to cash access through neighbourhood retailers.",
-        points: ["Ask about supported accounts and charges", "Biometric verification where required"],
-        services: ["atm"],
-        concept: { kind: "cash", service: "atm", caption: "Around your corner." },
-      },
+      { id: "wallet", nav: "Everyday wallet", title: ["One wallet", "for every day."], copy: "Receive money, hold it, pay with it and move it on. The everyday essentials in one place, with the amount, who it’s going to and any applicable fee shown before you confirm.", services: ["wallet", "wearpay", "secured"] },
+      { id: "cards", nav: "Cards & controls", title: ["Your card.", "Your rules."], copy: "Physical and virtual cards with digital controls. Routine controls are self-service, immediate and reversible wherever permitted, so you’re never waiting on someone else.", services: ["cards", "fraud"] },
+      { id: "remittance", nav: "Money from home", title: ["From family abroad,", "straight to you."], copy: "Receive eligible inward home remittances digitally, with the status visible from the moment it’s on its way. Subject to applicable approvals and arrangements.", services: ["remittance"] },
+      { id: "insights", nav: "Money Dashboard", title: ["See where it goes.", "Know what’s next."], copy: "Spending visibility and financial insights that turn into a clear, useful next action, not just a chart of what already happened.", services: ["dashboard"] },
+      { id: "grow", nav: "Save & grow", title: ["Put money aside.", "Let it grow."], copy: "Super Savers connects you with eligible partner savings offerings. PayKaro Wealth gives access to selected investment and savings products through regulated partners.", services: ["supersavers", "wealth"] },
     ],
   },
   business: {
     key: "business",
     label: "Business",
+    pathway: "Business / Merchants",
     eyebrow: "PayKaro Business",
-    title: ["Your ambition.", "Our everyday", "focus."],
-    description:
-      "From the counter to the next opportunity. Explore payments and cash collection for the business you’re building.",
-    image: "/images/business.webp",
-    imagePosition: "62% 38%",
-    alt: "A Pakistani shop owner using his phone at the counter of his neighbourhood store",
-    heading: ["Your business moves.", "Keep money moving, too."],
-    intro: "Practical payment and collection services for retailers, small traders and growing businesses.",
-    products: ["qr", "cash", "transfer"],
-    demo: "qr",
-    menuTitle: "For your business.",
-    cardDescription: "From Raast QR at the counter to cash collections, find services that fit your business.",
-    journeysTitle: ["Built around", "your counter."],
-    journeysIntro: "Payments, collections and partnerships for the businesses that keep Pakistan moving.",
-    photo: {
-      image: "/images/business.webp",
-      position: "25% 50%",
-      alt: "A customer waiting at a retail counter while the shopkeeper checks a phone",
-      label: "Your customers",
-      note: "Have places to be. Keep checkout simple.",
-    },
+    title: ["Get paid.", "See it clearly.", "Run the day."],
+    description: "Digital payments, collections and practical business-management tools for merchants and SMEs, with insight you can act on.",
+    cardDescription: "Take payments, collect what you’re owed, and see payment, settlement and performance clearly.",
+    menuTitle: "For merchants and SMEs.",
+    services: ["business", "merchantanalytics", "bizanalytics", "secured", "platform"],
     journeys: [
-      {
-        id: "merchant-payments",
-        nav: "Merchant payments",
-        menuLabel: "Payments at your counter",
-        title: ["At your counter.", "On their phone."],
-        copy: "Your customers have places to be. Explore Raast QR payments for a simpler moment at the counter, and domestic transfers for everyday business needs.",
-        points: ["QR payments for participating merchants", "Check the payment result before completing a sale"],
-        services: ["qr", "transfer"],
-        concept: { kind: "scan", service: "qr", caption: "A simpler exchange." },
-      },
-      {
-        id: "collections",
-        nav: "Cash collections",
-        menuLabel: "Collection arrangements",
-        title: ["Keep the takings", "moving forward."],
-        copy: "From a busy shop to a growing enterprise, cash needs a clear plan. Explore the collection services in PayKaro’s business portfolio.",
-        points: ["Discuss your business collection requirements", "Confirm coverage, schedules and applicable terms"],
-        services: ["cash"],
-        concept: { kind: "collection", service: "cash", caption: "Keep business moving." },
-      },
-      {
-        id: "retail-partners",
-        nav: "Retail partnerships",
-        menuLabel: "Join the retail network",
-        title: ["More possibilities.", "One familiar shop."],
-        copy: "Kiryana stores, pharmacies, recharge shops and small franchises are at the heart of the PayKaro retail network strategy.",
-        points: ["Explore services for your neighbourhood", "Ask about devices, training and onboarding"],
-        services: ["atm", "bills"],
-        partner: true,
-        concept: { kind: "network", service: "qr", caption: "Connected at the counter." },
-      },
+      { id: "payments", nav: "Payments", title: ["Take payments.", "Everywhere you sell."], copy: "Digital payments for the counter and for digital commerce, with every payment’s status and proof clear to you and your customer.", services: ["business", "secured"] },
+      { id: "collections", nav: "Collections", title: ["Money in.", "Clearly accounted for."], copy: "Collections that show where every payment stands, from received to settled, so the end of the day doesn’t start with a spreadsheet.", services: ["business", "merchantanalytics"] },
+      { id: "insights", nav: "Analytics", title: ["Numbers that", "tell you what to do."], copy: "Merchant Analytics shows payment, settlement and performance. Business Analytics adds financial insights and reporting for the whole business.", services: ["merchantanalytics", "bizanalytics"] },
     ],
   },
-  family: {
-    key: "family",
-    label: "Family",
-    eyebrow: "PayKaro Family",
-    title: ["For today.", "For each other.", "For your family."],
-    description:
-      "Every family has its own rhythm. Explore simple ways to send money, manage household bills and take care of the everyday.",
-    image: "/images/personal.webp",
-    imagePosition: "30% 45%",
-    alt: "A father and his adult daughter spending time together and checking a phone at home",
-    heading: ["For the people", "you call home."],
-    intro: "Everyday services that help you stay connected to your family’s practical money needs.",
-    products: ["bills", "transfer", "atm"],
-    demo: "bills",
-    menuTitle: "For your family.",
-    cardDescription: "Take care of household bills, send money to loved ones and explore everyday cash access.",
-    journeysTitle: ["Everyday care,", "in every connection."],
-    journeysIntro: "Household bills, money for loved ones and cash for the everyday.",
-    photo: {
-      image: "/images/personal.webp",
-      position: "75% 40%",
-      alt: "A father showing his daughter something on his phone in their living room",
-      label: "At home",
-      note: "Household essentials, looked at together.",
-    },
+  partners: {
+    key: "partners",
+    label: "Partners",
+    pathway: "Partners / Institutions",
+    eyebrow: "PayKaro for Partners & Institutions",
+    title: ["Built for partners", "and institutions."],
+    description: "Controlled connectivity and embedded-payment capabilities for approved businesses and institutions, and a place for your service inside PayKaro.",
+    cardDescription: "Embedded payments and connectivity for approved businesses and institutions, and curated services inside PayKaro.",
+    menuTitle: "For partners and institutions.",
+    services: ["platform", "marketplace", "remittance", "wealth", "supersavers", "fraud"],
     journeys: [
-      {
-        id: "household-bills",
-        nav: "Household bills",
-        menuLabel: "Household essentials",
-        title: ["Less on your list.", "More family time."],
-        copy: "Electricity, utilities, everyday essentials. Explore bill payments with a little more clarity, so the household routine is easier to understand.",
-        points: ["Check your biller and consumer reference", "Keep the payment record for your household"],
-        services: ["bills"],
-        concept: { kind: "household", service: "bills", caption: "One less thing to do." },
-      },
-      {
-        id: "send-money-home",
-        nav: "Send money home",
-        menuLabel: "Transfers to loved ones",
-        title: ["Across Pakistan.", "Close to home."],
-        copy: "For a parent, a sibling or someone starting a new chapter. Learn about domestic transfers for the people who matter to you.",
-        points: ["Confirm the recipient’s name and account", "Review the amount before you authorise"],
-        services: ["transfer"],
-        concept: { kind: "family", service: "transfer", caption: "Always connected." },
-      },
-      {
-        id: "family-cash",
-        nav: "Everyday cash",
-        menuLabel: "Cash for your household",
-        title: ["A helping hand", "for everyday needs."],
-        copy: "Explore cash access through Micro ATM devices, with a person at the counter to explain the next step.",
-        points: ["Confirm service availability at the location", "Review requirements and take your receipt"],
-        services: ["atm"],
-        concept: { kind: "cash", service: "atm", caption: "For everyday moments." },
-      },
-    ],
-  },
-  agri: {
-    key: "agri",
-    label: "Agri",
-    eyebrow: "PayKaro Agri",
-    title: ["Rooted in work.", "Ready for", "what’s next."],
-    description:
-      "For the growers, traders and rural enterprises moving Pakistan forward. Explore everyday payments and neighbourhood cash access.",
-    image: "/images/agri.webp",
-    imagePosition: "50% 35%",
-    alt: "A Pakistani agricultural entrepreneur with a phone beside a flourishing green field",
-    heading: ["Built around work.", "Connected to progress."],
-    intro: "Explore payment and assisted cash services for the everyday needs of agricultural communities.",
-    products: ["transfer", "atm", "qr"],
-    demo: "atm",
-    menuTitle: "For rural progress.",
-    cardDescription: "Payments, cash access and collection services for growers, rural households and local traders.",
-    journeysTitle: ["Progress, from", "the ground up."],
-    journeysIntro: "Payments, cash and trade for growers, rural households and local enterprises.",
-    photo: {
-      image: "/images/agri.webp",
-      position: "85% 60%",
-      alt: "Green crops growing in a field under a soft morning sky",
-      label: "Beyond the field",
-      note: "Everyday services. Rural opportunity.",
-    },
-    journeys: [
-      {
-        id: "rural-payments",
-        nav: "Rural payments",
-        menuLabel: "Payments for rural communities",
-        title: ["Connections that", "go beyond the field."],
-        copy: "For growers, rural households and agricultural communities. Explore domestic transfers and bill payments around the rhythms of everyday work.",
-        points: ["Send money across Pakistan", "Understand the details before paying a bill"],
-        services: ["transfer", "bills"],
-        concept: { kind: "transfer", service: "transfer", caption: "Beyond the field." },
-      },
-      {
-        id: "rural-cash",
-        nav: "Cash access",
-        menuLabel: "Local cash services",
-        title: ["Your hard work.", "Your everyday cash."],
-        copy: "Discover how assisted Micro ATM services fit into the PayKaro retail network approach for rural communities.",
-        points: ["Check the nearest participating location", "Confirm supported accounts and verification needs"],
-        services: ["atm"],
-        concept: { kind: "access", service: "atm", caption: "Closer to your day." },
-      },
-      {
-        id: "rural-trade",
-        nav: "Trade & collections",
-        menuLabel: "Payments for growers & traders",
-        title: ["From one season", "to the next sale."],
-        copy: "For small traders and rural enterprises, explore payment and cash collection services to support the day’s business.",
-        points: ["Raast QR for participating merchants", "Collection arrangements subject to confirmation"],
-        services: ["qr", "cash"],
-        concept: { kind: "trade", service: "cash", caption: "From work to possibility." },
-      },
-    ],
-  },
-  assisted: {
-    key: "assisted",
-    label: "Assisted",
-    eyebrow: "PayKaro Assisted",
-    title: ["A familiar face.", "A simpler way", "to bank."],
-    description:
-      "Digital services, with a human connection. Discover money transfers, bill payments and Micro ATM services through neighbourhood retailers.",
-    image: "/images/business.webp",
-    imagePosition: "30% 45%",
-    alt: "A neighbourhood retailer helping a customer at his shop counter",
-    heading: ["Digital convenience.", "A human connection."],
-    intro: "Everyday financial services, brought closer through PayKaro’s retail agent network approach.",
-    products: ["atm", "bills", "transfer"],
-    demo: "atm",
-    menuTitle: "A helping hand.",
-    cardDescription: "Get familiar with bill payments, transfers and Micro ATM services through your neighbourhood retailer.",
-    journeysTitle: ["People helping", "people."],
-    journeysIntro: "Counter services, Micro ATM access and the neighbourhood network behind them.",
-    photo: {
-      image: "/images/business.webp",
-      position: "80% 50%",
-      alt: "Shelves of everyday goods behind a neighbourhood shop counter",
-      label: "In your neighbourhood",
-      note: "Aasani starts with a conversation.",
-    },
-    journeys: [
-      {
-        id: "counter-services",
-        nav: "Counter services",
-        menuLabel: "Help at the counter",
-        title: ["You bring the need.", "We bring the clarity."],
-        copy: "A bill to pay or money to send. Explore everyday digital services through the human connection of a neighbourhood retail counter.",
-        points: ["Domestic transfers and bill payments", "Check the details together before confirming"],
-        services: ["transfer", "bills"],
-        concept: { kind: "help", service: "bills", caption: "A little help goes far." },
-      },
-      {
-        id: "micro-atm",
-        nav: "Micro ATM",
-        menuLabel: "Explore Micro ATM services",
-        title: ["Cash access,", "with someone to help."],
-        copy: "Micro ATM devices and biometric verification are part of PayKaro’s assisted service portfolio. Get familiar with the steps before visiting a counter.",
-        points: ["Ask about availability, accounts and charges", "Confirm the transaction and keep your receipt"],
-        services: ["atm"],
-        concept: { kind: "access", service: "atm", caption: "A more human connection." },
-      },
-      {
-        id: "neighbourhood-network",
-        nav: "Retail network",
-        menuLabel: "Our retail network",
-        title: ["A neighbourhood", "full of possibility."],
-        copy: "The everyday shops people know. PayKaro’s network strategy centres on kiryana stores, pharmacies, utility shops and small franchises.",
-        points: ["A familiar setting for digital services", "A new service direction for local retailers"],
-        services: ["qr", "atm"],
-        partner: true,
-        concept: { kind: "network", service: "atm", caption: "Part of your neighbourhood." },
-      },
+      { id: "platform", nav: "APIs & platform", title: ["Controlled connectivity.", "Embedded payments."], copy: "PayKaro APIs / Platform Services give approved businesses and institutions controlled connectivity and embedded-payment capabilities.", services: ["platform"] },
+      { id: "disbursements", nav: "Disbursements", title: ["Pay many people.", "Clearly."], copy: "Enabled services for billers, employers, businesses and institutions, so the people you pay see what arrived and why.", services: ["platform", "business"] },
+      { id: "marketplace", nav: "Marketplace", title: ["Your service,", "in the moment it’s needed."], copy: "PayKaro Marketplace brings curated partner services into the PayKaro experience, surfaced when relevant to what the customer is doing, not as a wall of promotions.", services: ["marketplace"] },
     ],
   },
 };
+
+/** Intent-led walkthroughs (brief §4, §5, §10). Illustrative only; no real transactions. */
+export type DemoKey = "send" | "remit" | "card" | "recover";
+export const DEMO_ORDER: DemoKey[] = ["send", "remit", "card", "recover"];
+
+export type ScreenStatus = "idle" | "pending" | "success" | "failure" | "recovery";
+
+export interface DemoStep {
+  heading: string;
+  caption: string;
+  button: string;
+  status: ScreenStatus;
+  screenTitle: string;
+  rows?: [string, string][];
+}
 
 export interface Demo {
   label: string;
-  title: string;
-  lead: string;
-  finish: string;
-  hint: string;
-  checks: [string, string];
-  end: string;
+  intent: string;
+  service: ServiceKey;
+  steps: [DemoStep, DemoStep, DemoStep];
 }
 
-export const DEMO_ORDER: DemoKey[] = ["transfer", "bills", "qr", "atm"];
-
 export const demos: Record<DemoKey, Demo> = {
-  transfer: {
+  send: {
     label: "Send money",
-    title: "A little closer.",
-    lead: "Check the details.",
-    finish: "Keep your reference.",
-    hint: "Connect with someone across Pakistan.",
-    checks: ["Confirm the recipient", "Review the amount"],
-    end: "A clear record for every connection.",
+    intent: "I want to send money",
+    service: "wallet",
+    steps: [
+      { heading: "Say what you want to do.", caption: "Start from the intent, not a menu. Pick a person you pay often, or search.", button: "Continue", status: "idle", screenTitle: "Send to", rows: [["Recent", "Ammi"], ["Recent", "Bilal"], ["Search", "Name or number"]] },
+      { heading: "See everything before you confirm.", caption: "Amount, who it’s going to and any applicable fee, on one screen.", button: "Confirm", status: "pending", screenTitle: "Review", rows: [["To", "Ammi"], ["Amount", "Rs 5,000"], ["Applicable fee", "Shown here"]] },
+      { heading: "Done, with proof to share.", caption: "A clear confirmation and a receipt you can share straight away.", button: "Try another", status: "success", screenTitle: "Sent", rows: [["Status", "Completed"], ["Proof", "Ready to share"]] },
+    ],
   },
-  bills: {
-    label: "Pay bills",
-    title: "The essentials, sorted.",
-    lead: "A quick double-check.",
-    finish: "One less thing to do.",
-    hint: "Make room for the rest of your day.",
-    checks: ["Match your bill reference", "Check the amount due"],
-    end: "Keep your receipt with your bill.",
+  remit: {
+    label: "Money from abroad",
+    intent: "Money is coming from family abroad",
+    service: "remittance",
+    steps: [
+      { heading: "Know it’s on its way.", caption: "Status is visible from the start, so there’s no guessing.", button: "Next", status: "pending", screenTitle: "Incoming", rows: [["From", "Family abroad"], ["Status", "On its way"]] },
+      { heading: "Know when it lands.", caption: "A plain confirmation the moment it arrives in your wallet.", button: "Next", status: "success", screenTitle: "Received", rows: [["Amount", "Shown in rupees"], ["Status", "In your wallet"]] },
+      { heading: "Know what to do next.", caption: "Useful next actions in context: send some on, pay a bill or set some aside.", button: "Try another", status: "idle", screenTitle: "Next", rows: [["Send some on", "›"], ["Set some aside", "›"]] },
+    ],
   },
-  qr: {
-    label: "Raast QR",
-    title: "A simpler way to pay.",
-    lead: "Know who you’re paying.",
-    finish: "Check. Pay. Carry on.",
-    hint: "A familiar counter. A simpler moment.",
-    checks: ["Confirm the merchant", "Review the payment"],
-    end: "Check the result and keep your receipt.",
+  card: {
+    label: "Freeze your card",
+    intent: "I can’t find my card",
+    service: "cards",
+    steps: [
+      { heading: "Control it yourself.", caption: "Routine card controls are self-service and immediate. No call, no queue.", button: "Freeze card", status: "idle", screenTitle: "Your card", rows: [["Card", "•••• 4821"], ["Status", "Active"]] },
+      { heading: "Frozen, instantly.", caption: "The change takes effect straight away, and the screen says so.", button: "Next", status: "success", screenTitle: "Card frozen", rows: [["Status", "Frozen"], ["Payments", "Paused"]] },
+      { heading: "Reversible, when you’re ready.", caption: "Found it? Unfreeze it just as quickly. Controls are reversible wherever permitted.", button: "Try another", status: "recovery", screenTitle: "Unfreeze", rows: [["Status", "Active again"]] },
+    ],
   },
-  atm: {
-    label: "Cash access",
-    title: "Help, close to home.",
-    lead: "Start with confidence.",
-    finish: "Your cash. Your receipt.",
-    hint: "A human connection at the counter.",
-    checks: ["Confirm service availability", "Check fees and requirements"],
-    end: "Count your cash and keep your receipt.",
+  recover: {
+    label: "When something goes wrong",
+    intent: "My payment didn’t go through",
+    service: "wallet",
+    steps: [
+      { heading: "A reason, in plain language.", caption: "Never a generic “something went wrong”. PayKaro says what happened.", button: "What can I do?", status: "failure", screenTitle: "Not sent", rows: [["Why", "The recipient’s account didn’t respond"], ["Your money", "Not taken"]] },
+      { heading: "A clear way forward.", caption: "Every error comes with a recovery path. No dead ends.", button: "Try again", status: "recovery", screenTitle: "What next", rows: [["Try again", "›"], ["Send another way", "›"], ["Get help", "›"]] },
+      { heading: "Sorted.", caption: "Retried, confirmed, and proof ready to share.", button: "Try another", status: "success", screenTitle: "Sent", rows: [["Status", "Completed"], ["Proof", "Ready to share"]] },
+    ],
   },
 };
+
+export type InfoKey = "getpaykaro" | "fees" | "website" | "accessibility" | "login" | "partners" | "business";
 
 export interface Info {
   label: string;
@@ -513,72 +320,77 @@ export interface Info {
 }
 
 export const info: Record<InfoKey, Info> = {
-  retail: {
-    label: "Retail partnerships",
-    title: "Bring more possibilities to your counter.",
-    body: "PayKaro’s retail network strategy focuses on kiryana stores, mobile recharge shops, pharmacies, utility stores and small franchise stores.",
+  getpaykaro: {
+    label: "Get PayKaro",
+    title: "The app isn’t available here yet.",
+    body: "PayKaro’s app can’t be downloaded from this website yet. Official app-store links will be published here.",
     bullets: [
-      "Explore domestic transfers, bill payments, Raast QR and Micro ATM services.",
-      "Confirm onboarding requirements, device availability, training and support.",
-      "Review applicable commissions, charges and operating terms before joining.",
+      "Getting from download to your first successful payment is designed as a flagship journey: fewer screens, no repeated questions.",
+      "English and Urdu are both designed to feel native.",
+      "Only download PayKaro from the official links published here.",
     ],
-    note: "Online partner registration is not available on this website. Onboarding requirements and official contact information will be available when registration opens.",
+    note: "This website never asks for your PIN, password, one-time code, CNIC or account details.",
+  },
+  business: {
+    label: "PayKaro Business",
+    title: "Explore for Business.",
+    body: "PayKaro Business brings digital payments, collections and practical business-management tools to merchants and SMEs.",
+    bullets: [
+      "Merchant Analytics: payment, settlement and performance visibility.",
+      "Business Analytics: financial insights and reporting.",
+      "Approved businesses can also connect through PayKaro APIs / Platform Services.",
+    ],
+    note: "Business onboarding isn’t available on this website yet. An official channel will be published here.",
+  },
+  partners: {
+    label: "Partners & institutions",
+    title: "Partner with PayKaro.",
+    body: "PayKaro works with approved businesses and institutions through controlled connectivity, embedded payments and curated partner services.",
+    bullets: [
+      "APIs / Platform Services for approved businesses and institutions.",
+      "Marketplace: curated partner services inside the PayKaro experience.",
+      "Enabled services for billers, employers, businesses and institutions.",
+    ],
+    note: "An official partner-enquiry channel will be published here. This website doesn’t collect enquiry details.",
   },
   fees: {
-    label: "Important information",
-    title: "Know the details before you transact.",
-    body: "Charges, limits, eligibility and location coverage should be confirmed for the specific service you want to use.",
+    label: "Fees",
+    title: "Every fee, before you confirm.",
+    body: "Any applicable fee is shown on the confirmation screen, next to the amount and who you’re paying, before you agree to anything.",
     bullets: [
-      "Check the applicable fee before authorising a transaction.",
-      "Confirm service availability and account requirements.",
-      "Read the relevant product terms and keep a record.",
+      "PayKaro’s commercial philosophy: core consumer money movement should not be monetised through friction.",
+      "The broader ecosystem funds the model: cards, merchant acceptance, partnerships and optional subscriptions.",
+      "Optional features, such as PayKaro Premium, are always your choice.",
     ],
-    note: "A verified schedule of charges is not published on this website. This website does not quote rates or fees.",
+    note: "A schedule of charges isn’t published on this website yet.",
   },
   website: {
     label: "Website information",
-    title: "Explore with confidence.",
-    body: "This website provides information about PayKaro’s service direction. It does not open accounts, process payments or offer insurance coverage.",
+    title: "About this website.",
+    body: "This website explains PayKaro and its services. It does not open accounts, process payments or sell any product.",
     bullets: [
-      "The service walkthrough uses sample information and makes no real transactions.",
-      "No account number, CNIC, password, PIN or contact details are requested.",
-      "Photographs are illustrative imagery, not customer endorsements.",
-      "App screens are abstract concepts. PayKaro’s mobile app design is still to be defined.",
+      "App screens and walkthroughs are illustrative concepts with sample data. No real transactions happen.",
+      "No account number, CNIC, password, PIN, one-time code or contact details are requested.",
+      "Photographs are illustrative, not customer endorsements.",
     ],
-    note: "This site does not use advertising trackers or store banking details. Product terms, legal entity details and official contact channels must be confirmed before live financial services are introduced.",
+    note: "Product terms, legal entity details and official contact channels will be published here before launch.",
   },
   accessibility: {
     label: "Accessibility",
-    title: "Built to be easier to use.",
-    body: "You can explore the website using a keyboard, a touch screen or assistive technology.",
+    title: "Built to be easy to use.",
+    body: "You can use this website with a keyboard, a touch screen or assistive technology.",
     bullets: [
-      "Use Tab to move between links and controls; Enter or Space activates buttons.",
-      "In the header, arrow keys move between segments and Arrow Down opens a segment’s menu. Escape closes menus and panels.",
-      "Use arrow keys to move between service walkthrough tabs.",
-      "The layout adapts to smaller screens and respects reduced-motion preferences.",
+      "Tab moves between links and controls; Enter or Space activates them.",
+      "In the header, Left and Right move along the menu, Down opens a menu, and Escape closes it.",
+      "Layouts adapt to small screens, and motion is reduced when your device asks for it.",
     ],
-    note: "Your browser’s zoom and text-size settings are supported.",
+    note: "Browser zoom and text-size settings are supported.",
   },
   login: {
     label: "Account access",
-    title: "Your next step, securely.",
-    body: "Online account access is not available on this website yet.",
-    bullets: [
-      "Explore the service walkthroughs to get familiar with PayKaro.",
-      "Use only a verified PayKaro channel when account access becomes available.",
-    ],
-    note: "An official login destination has not yet been published here. This website never asks for your password, PIN or one-time code.",
-  },
-  onboarding: {
-    label: "Get started with PayKaro",
-    title: "A simpler start. Coming together.",
-    body: "Account opening is not available on this website yet. You can explore PayKaro’s services and the steps to understand before getting started.",
-    bullets: [
-      "Choose the services that fit your everyday needs.",
-      "Confirm eligibility, identification requirements and applicable terms when onboarding opens.",
-      "Retailers can explore the partnership information.",
-    ],
-    note: "Official account-opening channels and requirements will be published when available.",
+    title: "Log in with the app.",
+    body: "There is no account login on this website.",
+    bullets: ["When PayKaro launches, you’ll manage your money in the official app."],
+    note: "This website never asks for your password, PIN or one-time code. If a site or message does, don’t enter them.",
   },
 };
-

@@ -26,7 +26,7 @@ function LightRibbon({ className }: { className?: string }) {
     <motion.div
       aria-hidden="true"
       className={cn("pointer-events-none absolute inset-x-[-10%] top-[8%] -z-10 h-[70%] mix-blend-screen", className)}
-      {...anim({ opacity: 0 }, { delay: 1.1, duration: 1.9, type: "spring", bounce: 0.2 })}
+      {...anim({ opacity: 0 }, { delay: 0.3, duration: 1.2, ease: [0.44, 0, 0.56, 1] })}
     >
       <svg viewBox="0 0 1600 600" className="motion-anim h-full w-full [animation:light-drift_16s_ease-in-out_infinite]" preserveAspectRatio="none">
         <defs>
@@ -114,8 +114,7 @@ function HeroCopy({
   return (
     <motion.div
       className="mx-auto w-full max-w-[1580px] px-4 pb-10 min-[810px]:px-10 lg:pb-[100px]"
-      style={{ originY: 1 }}
-      {...anim({ scale: 1.2, y: 80, opacity: 0 }, { delay: 1, duration: 1, ease: [1, 0.08, 0.34, 0.95], opacity: { delay: 0.6, duration: 0.6 } })}
+      {...anim({ y: 24, opacity: 0 }, { delay: 0.15, duration: 0.5, ease: [0.44, 0, 0.56, 1] })}
     >
       {eyebrow && <p className="text-[16px] font-medium lg:text-[18px]">{eyebrow}</p>}
       <div className="mt-4 grid items-end gap-6 lg:mt-6 lg:grid-cols-[1.35fr_1fr] lg:gap-10">

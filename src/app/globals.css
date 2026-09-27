@@ -58,7 +58,7 @@
 
 /* Segment tokens. --seg is the brand colour, --seg-fill/--seg-on the pill pair,
    --seg-ink the readable accent on light surfaces, --seg-bright the accent on dark. */
-[data-seg="personal"],
+[data-seg="individuals"],
 [data-seg="business"] {
   --seg: #f16557;
   --seg-fill: #f16557;
@@ -69,7 +69,7 @@
   --logo-base: #f16557;
   --logo-face: #ffffff;
 }
-[data-seg="family"] {
+[data-seg="partners"] {
   --seg: #0283ff;
   --seg-fill: #0663bd;
   --seg-on: #ffffff;
@@ -78,26 +78,6 @@
   --seg-soft: #e4f0ff;
   --logo-base: #0663bd;
   --logo-face: #ffffff;
-}
-[data-seg="agri"] {
-  --seg: #00d164;
-  --seg-fill: #00d164;
-  --seg-on: #171717;
-  --seg-ink: #00652f;
-  --seg-bright: #00d164;
-  --seg-soft: #def7e9;
-  --logo-base: #00d164;
-  --logo-face: #191e30;
-}
-[data-seg="assisted"] {
-  --seg: #ffc409;
-  --seg-fill: #ffc409;
-  --seg-on: #171717;
-  --seg-ink: #795506;
-  --seg-bright: #ffc409;
-  --seg-soft: #fff4d1;
-  --logo-base: #ffc409;
-  --logo-face: #191e30;
 }
 
 [data-seg] {
@@ -187,6 +167,12 @@
   }
   p {
     text-wrap: pretty;
+  }
+  /* Urdu is set in Nastaliq with room for its tall ascenders and deep descenders. */
+  :lang(ur) {
+    font-family: var(--font-urdu), "Noto Naskh Arabic", serif;
+    line-height: 1.9;
+    letter-spacing: 0;
   }
   :focus-visible {
     outline: 2px solid var(--accent-ink);

@@ -2,16 +2,17 @@
 
 import Image from "next/image";
 import { Compass, Target, UserRound } from "lucide-react";
+import { benchmark, digbex, fiveQuestions } from "@/lib/sections-content";
 import { PaykaroLogo } from "@/components/brand/paykaro-logo";
 import { board, chairman, company, isPlaceholder, leadership, type Copy, type Person } from "@/lib/about-content";
 import { SEGMENT_KEYS, SERVICE_ORDER, segments, services } from "@/lib/content";
+import { ABOUT_KEYS, aboutPages, type AboutKey } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { Actions, CenterHead, FinalCta, H2_LG, LEAD, Sheet } from "./blocks";
 import { PageHero } from "./hero";
-import { Appear, ScrollHighlight } from "./motion";
+import { Appear } from "./motion";
 import { DesktopNav } from "./nav";
-import { PartnerLogo } from "./partner-logo";
-import { ArrowAction, Container, RouteLink, serviceIcons } from "./primitives";
+import { ArrowAction, Container, icons, RouteLink, serviceIcons } from "./primitives";
 import { useSite } from "./site-context";
 
 /** Renders real copy as-is, and a placeholder as a dashed, labelled box that can’t pass for content. */
@@ -73,22 +74,17 @@ function PersonCard({ person, index, group }: { person: Person; index: number; g
   );
 }
 
-function AboutCrossLinks({ current }: { current: "company" | "chairmans-message" | "leadership" }) {
-  const links = [
-    { key: "company", label: "Company" },
-    { key: "chairmans-message", label: "Chairman’s Message" },
-    { key: "leadership", label: "Leadership & Board Members" },
-  ] as const;
+function AboutCrossLinks({ current }: { current: AboutKey }) {
   return (
-    <nav aria-label="About Us pages" className="flex flex-wrap justify-center gap-2">
-      {links.map((l) => (
+    <nav aria-label="About Us pages" className="flex flex-wrap justify-center gap-2 px-4">
+      {ABOUT_KEYS.map((k) => (
         <RouteLink
-          key={l.key}
-          to={{ kind: "about", key: l.key }}
-          aria-current={l.key === current ? "page" : undefined}
-          className={cn("flex h-10 items-center rounded-full border px-5 font-ui text-[15px] transition-colors", l.key === current ? "border-ink bg-ink text-paper" : "border-line hover:border-ink/40")}
+          key={k}
+          to={{ kind: "about", key: k }}
+          aria-current={k === current ? "page" : undefined}
+          className={cn("flex h-10 items-center rounded-full border px-5 font-ui text-[15px] transition-colors", k === current ? "border-ink bg-ink text-paper" : "border-line hover:border-ink/40")}
         >
-          {l.label}
+          {aboutPages[k].menuLabel}
         </RouteLink>
       ))}
     </nav>
@@ -102,8 +98,8 @@ export function CompanyPage() {
       <div>
         <PageHero
           eyebrow="About PayKaro"
-          title={["Banking and", "digital services", "for Pakistan."]}
-          description="PayKaro brings domestic transfers, bill payments, Raast QR and assisted cash access closer to people, families, businesses and communities."
+          title={["Built for", "Pakistan. To a", "world standard."]}
+          description="PayKaro is a digital financial experience for individuals, businesses and partners: immediate, understandable, self-service and human."
           actions={[
             { label: "Leadership & Board", onClick: () => go({ kind: "about", key: "leadership" }) },
             { label: "Chairman’s message", onClick: () => go({ kind: "about", key: "chairmans-message" }) },
@@ -111,12 +107,12 @@ export function CompanyPage() {
         />
         <Sheet tone="paper" roundTop roundBottom labelledBy="company-core-title" className="py-[60px] min-[810px]:py-[100px]">
           <h2 id="company-core-title" className="sr-only">
-            Vision and mission
+            What PayKaro is and promises
           </h2>
           <Container className="grid gap-4 lg:grid-cols-2">
             {[
-              { icon: Compass, title: "Our vision", copy: company.vision },
-              { icon: Target, title: "Our mission", copy: company.mission },
+              { icon: Compass, title: "What PayKaro is", copy: company.proposition },
+              { icon: Target, title: "Our promise", copy: company.promise },
             ].map((c, i) => (
               <Appear key={c.title} delay={i * 0.06} className="flex min-h-[320px] flex-col rounded-[var(--radius-card)] bg-card p-7 min-[810px]:p-10">
                 <span className="flex size-10 items-center justify-center rounded-full bg-paper">
@@ -143,25 +139,36 @@ export function CompanyPage() {
             <Text copy={company.nameStory} className="mt-4 text-[16px]" />
           </Appear>
           <Appear>
-            <h3 className="text-[24px] font-medium">Why PayKaro exists</h3>
-            <Text copy={company.why} className="mt-4 text-[16px]" />
+            <h3 className="text-[24px] font-medium">Everyday money, without the friction</h3>
+            <p className="mt-4 text-[16px] leading-[1.45] text-muted-ink">{company.everyday}</p>
           </Appear>
           <Appear>
-            <h3 className="text-[24px] font-medium">The founding conviction</h3>
-            <Text copy={company.conviction} className="mt-4 text-[16px]" />
+            <h3 className="text-[24px] font-medium">Our character</h3>
+            <p className="mt-4 text-[16px] leading-[1.45] text-muted-ink">{company.character}</p>
+          </Appear>
+          <Appear>
+            <h3 className="text-[24px] font-medium">Local relevance</h3>
+            <p className="mt-4 text-[16px] leading-[1.45] text-muted-ink">{company.local}</p>
+          </Appear>
+          <Appear>
+            <h3 className="text-[24px] font-medium">How PayKaro is funded</h3>
+            <p className="mt-4 text-[16px] leading-[1.45] text-muted-ink">Core consumer money movement should not be monetised through friction. The broader ecosystem funds the model.</p>
+            <ArrowAction className="mt-4" onClick={() => go({ kind: "page", key: "trust" }, "how-we-earn")}>
+              The eight parts of that ecosystem
+            </ArrowAction>
           </Appear>
         </Container>
       </Sheet>
 
       <section aria-labelledby="company-segments-title" data-theme="dark" className="relative -mt-8 overflow-hidden rounded-t-[var(--radius-sheet)] bg-night text-white">
-        <CenterHead id="company-segments-title" dark className="pt-[100px] min-[810px]:pt-[160px]" title={<>Five segments.<br />One PayKaro.</>} lead="PayKaro is organised around the people it serves, each with its own colour, journeys and services." />
+        <CenterHead id="company-segments-title" dark className="pt-[100px] min-[810px]:pt-[160px]" title={<>Three pathways.<br />One PayKaro.</>} lead="Clear routes for individuals, businesses and merchants, and partners and institutions." />
         <Container className="mt-14 pb-[100px] min-[810px]:mt-20 min-[810px]:pb-[160px]">
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          <ul className="grid gap-3 lg:grid-cols-3">
             {SEGMENT_KEYS.map((k, i) => (
               <Appear key={k} as="li" delay={i * 0.05} y={24}>
                 <RouteLink to={{ kind: "segment", key: k }} data-seg={k} className="group flex h-full min-h-[260px] flex-col rounded-[var(--radius-card)] border border-white/10 bg-[#1f1f1f] p-6 transition-colors hover:border-white/30">
                   <PaykaroLogo decorative className="w-[52px]" />
-                  <p className="mt-auto pt-10 text-[24px] leading-none font-medium">{segments[k].label}</p>
+                  <p className="mt-auto pt-10 text-[24px] leading-none font-medium">{segments[k].pathway}</p>
                   <p className="mt-2 font-ui text-[14px] leading-[1.25] text-white/65">{segments[k].cardDescription}</p>
                   <span className="mt-4 h-[3px] w-10 rounded-full bg-seg transition-all duration-300 group-hover:w-full" aria-hidden="true" />
                 </RouteLink>
@@ -170,12 +177,8 @@ export function CompanyPage() {
           </ul>
           <div className="mt-16 grid gap-10 border-t border-white/10 pt-12 lg:grid-cols-[1fr_1.4fr]">
             <div>
-              <h3 className="text-[28px] leading-[1.05] font-medium">What PayKaro offers</h3>
-              <p className="mt-4 max-w-[380px] text-[15px] leading-[1.3] text-white/65">The verified service portfolio. Availability, eligibility and charges are confirmed for each service.</p>
-              <div className="mt-6 flex gap-3">
-                <PartnerLogo partner="1link" chip className="h-14" />
-                <PartnerLogo partner="raast" chip className="h-14" />
-              </div>
+              <h3 className="text-[28px] leading-[1.05] font-medium">The PayKaro universe</h3>
+              <p className="mt-4 max-w-[380px] text-[15px] leading-[1.3] text-white/65">Sixteen services. Availability, eligibility and terms aren’t published on this website yet.</p>
             </div>
             <ul className="grid gap-x-8 sm:grid-cols-2">
               {SERVICE_ORDER.map((k) => {
@@ -185,8 +188,8 @@ export function CompanyPage() {
                     <button type="button" onClick={() => openDialog({ type: "service", key: k })} className="flex w-full items-center gap-4 py-4 text-left hover:text-seg-bright">
                       <Icon className="size-5 shrink-0" strokeWidth={1.5} aria-hidden="true" />
                       <span className="text-[16px]">
-                        {services[k].short}
-                        {services[k].planned && <span className="ml-2 rounded-full border border-white/30 px-2 py-0.5 text-[11px] tracking-[0.04em] uppercase">Planned</span>}
+                        {services[k].name}
+                        {services[k].optional && <span className="ml-2 rounded-full border border-white/30 px-2 py-0.5 text-[11px] tracking-[0.04em] uppercase">Optional</span>}
                       </span>
                     </button>
                   </li>
@@ -243,7 +246,6 @@ export function CompanyPage() {
 
 export function ChairmanPage() {
   const { go } = useSite();
-  const introText = isPlaceholder(chairman.intro) ? `${chairman.intro.field}: ${chairman.intro.hint}` : chairman.intro;
   return (
     <>
       <section aria-labelledby="chairman-title" data-theme="dark" className="relative overflow-hidden bg-[#0b0b0b] text-white">
@@ -261,10 +263,7 @@ export function ChairmanPage() {
           <div className="mt-14 grid gap-8 min-[810px]:mt-20 lg:grid-cols-[1fr_2fr]">
             <div />
             <div>
-              {isPlaceholder(chairman.intro) && (
-                <p className="mb-4 inline-block rounded-full border border-dashed border-white/40 px-3 py-1 font-ui text-[11px] font-bold tracking-[0.04em] uppercase">To be supplied</p>
-              )}
-              <ScrollHighlight text={introText} className={cn("text-[28px] leading-[1.15] font-medium min-[810px]:text-[40px]", isPlaceholder(chairman.intro) && "text-white/90")} />
+              <Text copy={chairman.intro} dark className="text-[28px] leading-[1.15] font-medium min-[810px]:text-[40px]" />
             </div>
           </div>
         </Container>
@@ -343,15 +342,136 @@ export function LeadershipPage() {
 
       <FinalCta
         id="leadership-cta"
-        title={["Banking,", "aasani say."]}
-        copy="Explore PayKaro’s services for people, families, businesses and communities across Pakistan."
+        title={["Built for Pakistan.", "To a world standard."]}
+        copy="Explore PayKaro for individuals, businesses and merchants, and partners and institutions."
         actions={[
-          { label: "Get started", onClick: () => openDialog({ type: "info", key: "onboarding" }) },
+          { label: "Get PayKaro", onClick: () => openDialog({ type: "info", key: "getpaykaro" }) },
           { label: "Company", onClick: () => go({ kind: "about", key: "company" }) },
         ]}
       />
       <section className="bg-paper py-[80px]">
         <AboutCrossLinks current="leadership" />
+      </section>
+    </>
+  );
+}
+
+/** DIGBEX (brief s4), benchmark disciplines (s8), design direction (s7) and the five-question test (s11). */
+export function DigbexPage() {
+  const { go } = useSite();
+  return (
+    <>
+      <div>
+        <PageHero
+          eyebrow="Our approach"
+          title={["DIGBEX: designed", "from your intent", "backwards."]}
+          description="DIGBEX, Digital Banking Experience, is PayKaro’s governing customer-experience philosophy. The website explains it; the app is built on it."
+          actions={[
+            { label: "See it in the app", onClick: () => go({ kind: "page", key: "app" }) },
+            { label: "Company", onClick: () => go({ kind: "about", key: "company" }) },
+          ]}
+        />
+        <Sheet tone="white" labelledBy="digbex-principles-title" className="py-[100px] min-[810px]:py-[160px]">
+          <CenterHead id="digbex-principles-title" title={<>Ten principles.<br />One experience.</>} lead="Design from what the customer wants to do, not from the product catalogue forward." />
+          <Container className="mt-14 min-[810px]:mt-20">
+            <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              {digbex.map((p, i) => {
+                const Icon = icons[p.icon];
+                return (
+                  <Appear key={p.title} as="li" delay={(i % 5) * 0.04} y={20} className="flex min-h-[280px] flex-col rounded-[var(--radius-card)] bg-paper p-6">
+                    <div className="flex items-center justify-between">
+                      <span className="flex size-10 items-center justify-center rounded-full bg-card">
+                        <Icon className="size-4" strokeWidth={1.75} aria-hidden="true" />
+                      </span>
+                      <span className="font-num text-[28px] leading-none text-faint-ink">{String(i + 1).padStart(2, "0")}</span>
+                    </div>
+                    <h3 className="mt-auto pt-10 text-[20px] leading-[1.1] font-medium">{p.title}</h3>
+                    <p className="mt-2 font-ui text-[14px] leading-[1.3] text-muted-ink">{p.copy}</p>
+                  </Appear>
+                );
+              })}
+            </ol>
+          </Container>
+        </Sheet>
+      </div>
+
+      <section aria-labelledby="benchmark-title" data-theme="dark" className="relative z-10 -mt-8 rounded-[var(--radius-sheet)] bg-night text-white">
+        <Container className="py-[100px] min-[810px]:py-[160px]">
+          <Appear y={24} className="max-w-[900px]">
+            <p className="font-num text-[20px] tracking-[0.02em] text-white/60">Winning the phone</p>
+            <h2 id="benchmark-title" className="mt-4 text-[44px] leading-[0.9] font-medium tracking-[-0.02em] min-[810px]:text-[80px]">
+              The standard is the best app on your phone.
+            </h2>
+            <p className={cn(LEAD, "mt-6 max-w-[620px] text-white/70")}>
+              PayKaro is measured against the best digital financial apps people already use, not the average local banking app: immediate, intuitive, personal and dependable.
+            </p>
+          </Appear>
+          <ol className="mt-14 border-t border-white/12 min-[810px]:mt-20">
+            {benchmark.map((b, i) => (
+              <Appear key={b.title} as="li" delay={0.03 * i} className="grid gap-3 border-b border-white/12 py-7 min-[810px]:grid-cols-[120px_1fr_1.2fr] min-[810px]:items-baseline">
+                <span className="font-num text-[40px] leading-none text-seg-bright">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="text-[26px] leading-[1.05] font-medium min-[810px]:text-[32px]">{b.title}</h3>
+                <p className="max-w-[520px] text-[16px] leading-[1.35] text-white/70">{b.copy}</p>
+              </Appear>
+            ))}
+          </ol>
+        </Container>
+      </section>
+
+      <Sheet tone="paper" roundTop={false} labelledBy="design-title" className="-mt-8 pt-8">
+        <Container className="py-[100px] min-[810px]:py-[140px]">
+          <CenterHead id="design-title" scrub={false} title={<>One design language,<br />everywhere</>} lead="Website, app, English and Urdu share the same typography, spacing, iconography and motion." />
+          <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {[
+              ["Related everywhere", "Typography, spacing, iconography and motion feel related across website, app, English and Urdu."],
+              ["Motion that means something", "Motion signals state, progress or completion. Nothing decorative that slows comprehension."],
+              ["Original, Pakistani imagery", "Real Pakistani customers, merchants and contexts, not generic global stock."],
+              ["Daylight and modest devices first", "Designed for daylight legibility, modest phones and real network conditions."],
+              ["Premium through restraint", "Premium comes from restraint, clarity and craft, not visual density."],
+            ].map(([t, c], i) => (
+              <Appear key={t} as="li" delay={i * 0.04} className="rounded-[var(--radius-card)] bg-card p-6">
+                <p className="font-num text-[18px] text-seg-ink">{String(i + 1).padStart(2, "0")}</p>
+                <h3 className="mt-6 text-[19px] leading-[1.1] font-medium">{t}</h3>
+                <p className="mt-2 font-ui text-[14px] leading-[1.3] text-muted-ink">{c}</p>
+              </Appear>
+            ))}
+          </ul>
+        </Container>
+      </Sheet>
+
+      <section aria-labelledby="test-title" className="bg-card">
+        <Container className="grid gap-12 py-[100px] min-[810px]:py-[160px] lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+          <Appear y={24}>
+            <p className="font-num text-[20px] tracking-[0.02em] text-muted-ink">The test</p>
+            <h2 id="test-title" className={cn(H2_LG, "mt-4")}>
+              Five questions every screen must pass
+            </h2>
+            <blockquote className="mt-8 max-w-[460px] border-l-2 border-seg pl-5 text-[17px] leading-[1.4] text-muted-ink">
+              A customer who has used a leading international wallet should find nothing here that feels like a step down. A customer who has never used one should feel that PayKaro was built specifically for them.
+            </blockquote>
+          </Appear>
+          <ol className="border-t border-line">
+            {fiveQuestions.map((q, i) => (
+              <Appear key={q} as="li" delay={i * 0.05} className="flex items-baseline gap-6 border-b border-line py-6">
+                <span className="font-num text-[48px] leading-none text-seg-ink">{i + 1}</span>
+                <p className="text-[22px] leading-[1.15] font-medium min-[810px]:text-[28px]">{q}</p>
+              </Appear>
+            ))}
+          </ol>
+        </Container>
+      </section>
+
+      <FinalCta
+        id="digbex-cta"
+        title={["See DIGBEX", "in the app."]}
+        copy="Intent-led home screens, proof on every transaction, immediate controls, and every state designed, in concept."
+        actions={[
+          { label: "The App", onClick: () => go({ kind: "page", key: "app" }) },
+          { label: "Security & Trust", onClick: () => go({ kind: "page", key: "trust" }) },
+        ]}
+      />
+      <section className="bg-paper py-[80px]">
+        <AboutCrossLinks current="digbex" />
       </section>
     </>
   );
