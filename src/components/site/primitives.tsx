@@ -38,6 +38,7 @@ import {
 import type { ButtonHTMLAttributes, ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { SegmentKey, ServiceKey } from "@/lib/content";
+import { withBase } from "@/lib/base-path";
 import { routePath, type Route } from "@/lib/routes";
 import { useSite } from "./site-context";
 
@@ -137,7 +138,7 @@ export function RouteLink({ to, hash, onNavigate, children, ref, ...props }: Lin
   return (
     <a
       ref={ref}
-      href={routePath(to) + (hash ? `#${hash}` : "")}
+      href={withBase(routePath(to) + (hash ? `#${hash}` : ""))}
       {...props}
       onClick={(e) => {
         props.onClick?.(e);

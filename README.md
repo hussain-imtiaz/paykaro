@@ -118,3 +118,7 @@ Service names and propositions are quoted from the brief's product and service u
 ## Deployment
 
 This project is independent of Option 1. Do not reuse Option 1's hosting configuration or project ID to publish it.
+
+Staging is a static export on GitHub Pages: https://hussain-imtiaz.github.io/paykaro/
+
+Pushes to `main` on that repository run `.github/workflows/deploy.yml`. The workflow sets `PAGES_BASE_PATH` so assets and links are prefixed for the project site. Local `npm run dev` and `npm run build` leave that variable unset and keep the existing server build.

@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { PaykaroLogo } from "@/components/brand/paykaro-logo";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { SEGMENT_KEYS, segments, services, type SegmentKey } from "@/lib/content";
+import { withBase } from "@/lib/base-path";
 import { ABOUT_KEYS, HOME, aboutPages, pages, routePath, type Route } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { useSite } from "./site-context";
@@ -220,7 +221,7 @@ function SegmentMenu({ segmentKey, onClose }: { segmentKey: SegmentKey; onClose:
             {s.journeys.map((j) => (
               <li key={j.id}>
                 <a
-                  href={`/${segmentKey}#${j.id}`}
+                  href={withBase(`/${segmentKey}#${j.id}`)}
                   className="text-white hover:text-seg-bright"
                   onClick={(e) => {
                     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -390,7 +391,7 @@ export function MobileNav() {
                 return (
                   <li key={k} data-seg={k}>
                     <a
-                      href={`/${k}`}
+                      href={withBase(`/${k}`)}
                       aria-current={active ? "page" : undefined}
                       className="flex items-center justify-between py-4 font-heading text-[28px] leading-none font-medium"
                       onClick={linkClick({ kind: "segment", key: k })}
@@ -404,7 +405,7 @@ export function MobileNav() {
               {extra.map((r) => (
                 <li key={routePath(r)}>
                   <a
-                    href={routePath(r)}
+                    href={withBase(routePath(r))}
                     aria-current={isRoute(r) ? "page" : undefined}
                     className="flex items-center justify-between py-4 font-heading text-[28px] leading-none font-medium"
                     onClick={linkClick(r)}
@@ -421,7 +422,7 @@ export function MobileNav() {
               {ABOUT_KEYS.map((k) => (
                 <li key={k}>
                   <a
-                    href={`/about/${k}`}
+                    href={withBase(`/about/${k}`)}
                     aria-current={route.kind === "about" && route.key === k ? "page" : undefined}
                     className="hover:text-seg-ink aria-[current=page]:text-seg-ink"
                     onClick={linkClick({ kind: "about", key: k })}
@@ -438,7 +439,7 @@ export function MobileNav() {
               <ul className="mt-3 space-y-3 text-[17px]">
                 {links.map((l) => (
                   <li key={l.label}>
-                    <a href={routePath(l.to) + (l.hash ? `#${l.hash}` : "")} className="hover:text-seg-ink" onClick={linkClick(l.to, l.hash)}>
+                    <a href={withBase(routePath(l.to) + (l.hash ? `#${l.hash}` : ""))} className="hover:text-seg-ink" onClick={linkClick(l.to, l.hash)}>
                       {l.label}
                     </a>
                   </li>

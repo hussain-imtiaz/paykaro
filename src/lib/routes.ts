@@ -1,3 +1,4 @@
+import { basePath } from "./base-path";
 import { SEGMENT_KEYS, isSegmentKey, segments, type SegmentKey } from "./content";
 
 export const ABOUT_KEYS = ["company", "digbex", "chairmans-message", "leadership"] as const;
@@ -55,7 +56,9 @@ export function parseRoute(parts: string[] | undefined): Route | null {
 }
 
 export function routeFromPathname(pathname: string | null): Route | null {
-  return parseRoute((pathname ?? "/").split("/").filter(Boolean));
+  let path = pathname ?? "/";
+  if (basePath && (path === basePath || path.startsWith(`${basePath}/`))) path = path.slice(basePath.length) || "/";
+  return parseRoute(path.split("/").filter(Boolean));
 }
 
 export function routePath(route: Route): string {

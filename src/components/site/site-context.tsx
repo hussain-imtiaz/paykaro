@@ -13,6 +13,7 @@ import {
   type ReactNode,
 } from "react";
 import { type DemoKey, type InfoKey, type SegmentKey, type ServiceKey } from "@/lib/content";
+import { withBase } from "@/lib/base-path";
 import { routeFromPathname, routeKey, routePath, routeSegment, routeTitle, sameRoute, type Route } from "@/lib/routes";
 import { scrollToTarget } from "@/lib/smooth-scroll";
 
@@ -69,7 +70,7 @@ export function SiteProvider({ initialRoute, children }: { initialRoute: Route; 
     document.body.dataset.theme = route.kind === "segment" && route.key === "business" ? "dark" : "light";
     document.title = routeTitle(route);
     const icon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
-    if (icon) icon.href = `/brand/logo-${segment}.svg`;
+    if (icon) icon.href = withBase(`/brand/logo-${segment}.svg`);
   }, [key]);
 
   useEffect(() => {
@@ -102,7 +103,7 @@ export function SiteProvider({ initialRoute, children }: { initialRoute: Route; 
         return;
       }
       pendingHash.current = hash ?? null;
-      window.history.pushState(null, "", routePath(to) + (hash ? `#${hash}` : ""));
+      window.history.pushState(null, "", withBase(routePath(to) + (hash ? `#${hash}` : "")));
       if (!hash) scrollToTarget(0, { immediate: true });
     },
     [route, scrollToSection],

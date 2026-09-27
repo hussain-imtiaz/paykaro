@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Site } from "@/components/site/site";
+import { withBase } from "@/lib/base-path";
 import { ALL_ROUTES, parseRoute, routeDescription, routePath, routeSegment, routeTitle } from "@/lib/routes";
 
 export const dynamicParams = false;
@@ -20,7 +21,7 @@ export async function generateMetadata({ params }: PageProps<"/[[...slug]]">): P
   return {
     title: routeTitle(route),
     description: routeDescription(route),
-    icons: { icon: `/brand/logo-${routeSegment(route)}.svg` },
+    icons: { icon: withBase(`/brand/logo-${routeSegment(route)}.svg`) },
   };
 }
 
