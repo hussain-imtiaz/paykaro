@@ -3,6 +3,7 @@
 import {
   ArrowLeftRight,
   Banknote,
+  Building2,
   CalendarClock,
   ChevronLeft,
   ChevronRight,
@@ -49,7 +50,7 @@ const retailFormats = [
   { icon: Smartphone, title: "Recharge & mobile shops", copy: "Counters people already visit for their phones.", bg: "#0663bd", fg: "#ffffff" },
   { icon: Cross, title: "Pharmacies", copy: "Trusted neighbourhood counters with regular footfall.", bg: "#00d164", fg: "#191e30" },
   { icon: Zap, title: "Utility shops", copy: "Where bills and everyday essentials already come together.", bg: "#ffc409", fg: "#191e30" },
-  { icon: Store, title: "Small franchises", copy: "Local franchise stores ready for new service directions.", bg: "#26262a", fg: "#ffffff" },
+  { icon: Building2, title: "Small franchises", copy: "Local franchise stores ready for new service directions.", bg: "#191e30", fg: "#ffffff" },
 ];
 
 const fanCards = [
@@ -329,10 +330,10 @@ function RetailCarousel() {
     <Sheet tone="white" id="retail-partners" labelledBy="retail-partners-title" roundTop className="relative -mt-8 scroll-mt-0 py-[100px] min-[810px]:py-[160px]">
       <CenterHead id="retail-partners-title" title={<>Made for the way<br />you trade</>} lead={j.copy} />
       <div className="mt-12 min-[810px]:mt-16">
-        <ul ref={track} data-lenis-prevent className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 min-[810px]:px-10 lg:px-[max(40px,calc((100vw-1240px)/2))]">
+        <ul ref={track} className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 min-[810px]:px-10 lg:px-[max(40px,calc((100vw-1240px)/2))]">
           {retailFormats.map((f, i) => (
             <Appear key={f.title} as="li" delay={i * 0.05} y={20} className="shrink-0 snap-start">
-              <div className="flex h-[380px] w-[280px] flex-col rounded-[var(--radius-card)] p-7 min-[810px]:h-[420px] min-[810px]:w-[340px]" style={{ background: f.bg, color: f.fg }}>
+              <div className="flex h-[380px] w-[280px] flex-col rounded-[var(--radius-card)] p-7 ring-1 ring-white/10 ring-inset min-[810px]:h-[420px] min-[810px]:w-[340px]" style={{ background: f.bg, color: f.fg }}>
                 <f.icon className="size-7" strokeWidth={1.5} aria-hidden="true" />
                 <h3 className="mt-auto text-[30px] leading-[1] font-medium">{f.title}</h3>
                 <p className="mt-3 font-ui text-[15px] leading-[1.25] opacity-80">{f.copy}</p>
