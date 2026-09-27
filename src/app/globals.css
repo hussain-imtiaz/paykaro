@@ -10,6 +10,7 @@
   --font-ui: "Apfel Grotezk", var(--font-bricolage), ui-sans-serif, sans-serif;
   --font-nav: var(--font-zalando), ui-sans-serif, sans-serif;
   --font-num: var(--font-oswald), ui-sans-serif, sans-serif;
+  --font-display: var(--font-clash), var(--font-bricolage), ui-sans-serif, sans-serif;
 
   --color-paper: var(--paper);
   --color-card: var(--card);

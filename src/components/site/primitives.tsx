@@ -19,7 +19,8 @@ import {
 } from "lucide-react";
 import type { ButtonHTMLAttributes, ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { segmentPath, type SegmentKey, type ServiceKey } from "@/lib/content";
+import type { SegmentKey, ServiceKey } from "@/lib/content";
+import { routePath, type Route } from "@/lib/routes";
 import { useSite } from "./site-context";
 
 export const serviceIcons: Record<ServiceKey, LucideIcon> = {
@@ -88,34 +89,31 @@ function isPlainClick(e: React.MouseEvent) {
   return e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
 }
 
-export function SegmentLink({
-  segment,
-  hash,
-  onNavigate,
-  children,
-  ...props
-}: Omit<ComponentProps<"a">, "href"> & {
-  segment: SegmentKey;
-  hash?: string;
-  onNavigate?: () => void;
-  children: ReactNode;
-}) {
+type LinkProps = Omit<ComponentProps<"a">, "href"> & { hash?: string; onNavigate?: () => void; children: ReactNode };
+
+/** Client-side link to any page; the page swaps in place, so colours and logo change in the same frame. */
+export function RouteLink({ to, hash, onNavigate, children, ref, ...props }: LinkProps & { to: Route }) {
   const site = useSite();
   return (
     <a
-      href={segmentPath(segment) + (hash ? `#${hash}` : "")}
+      ref={ref}
+      href={routePath(to) + (hash ? `#${hash}` : "")}
       {...props}
       onClick={(e) => {
         props.onClick?.(e);
         if (e.defaultPrevented || !isPlainClick(e)) return;
         e.preventDefault();
         onNavigate?.();
-        site.navigate(segment, hash);
+        site.go(to, hash);
       }}
     >
       {children}
     </a>
   );
+}
+
+export function SegmentLink({ segment, ...props }: LinkProps & { segment: SegmentKey }) {
+  return <RouteLink to={{ kind: "segment", key: segment }} {...props} />;
 }
 
 /** "↗ Label" link, the reference's inline call to action. */

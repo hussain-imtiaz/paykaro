@@ -12,15 +12,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import {
-  isSegmentKey,
-  segmentPath,
-  segments,
-  type DemoKey,
-  type InfoKey,
-  type SegmentKey,
-  type ServiceKey,
-} from "@/lib/content";
+import { type DemoKey, type InfoKey, type SegmentKey, type ServiceKey } from "@/lib/content";
+import { routeFromPathname, routeKey, routePath, routeSegment, routeTitle, sameRoute, type Route } from "@/lib/routes";
 import { scrollToTarget } from "@/lib/smooth-scroll";
 
 export type DialogState =
@@ -32,7 +25,10 @@ export type DialogState =
   | null;
 
 interface SiteContextValue {
+  route: Route;
+  /** Colour set in use: the segment on a segment page, Personal coral elsewhere. */
   segment: SegmentKey;
+  go: (route: Route, hash?: string) => void;
   navigate: (key: SegmentKey, hash?: string) => void;
   scrollToSection: (id: string) => void;
   dialog: DialogState;
@@ -48,38 +44,33 @@ const SiteContext = createContext<SiteContextValue | null>(null);
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-function segmentFromPath(pathname: string | null, fallback: SegmentKey): SegmentKey {
-  if (!pathname) return fallback;
-  const first = pathname.split("/").filter(Boolean)[0];
-  if (!first) return "personal";
-  return isSegmentKey(first) ? first : fallback;
-}
-
 function focusSectionHeading(el: HTMLElement) {
-  const heading = el.querySelector<HTMLElement>("h2, h3");
+  const heading = el.matches("h1, h2, h3") ? el : el.querySelector<HTMLElement>("h2, h3");
   if (heading) {
     heading.tabIndex = -1;
     heading.focus({ preventScroll: true });
   }
 }
 
-export function SiteProvider({ initialSegment, children }: { initialSegment: SegmentKey; children: ReactNode }) {
+export function SiteProvider({ initialRoute, children }: { initialRoute: Route; children: ReactNode }) {
   const pathname = usePathname();
-  const segment = segmentFromPath(pathname, initialSegment);
+  const route = routeFromPathname(pathname) ?? initialRoute;
+  const key = routeKey(route);
+  const segment = routeSegment(route);
   const [dialog, setDialog] = useState<DialogState>(null);
-  const [demoChoice, setDemoChoice] = useState<{ segment: SegmentKey; key: DemoKey | null } | null>(null);
-  const demo = demoChoice?.segment === segment ? demoChoice.key : null;
-  const setDemo = useCallback((key: DemoKey | null) => setDemoChoice({ segment, key }), [segment]);
+  const [demoChoice, setDemoChoice] = useState<{ page: string; key: DemoKey | null } | null>(null);
+  const demo = demoChoice?.page === key ? demoChoice.key : null;
+  const setDemo = useCallback((k: DemoKey | null) => setDemoChoice({ page: key, key: k }), [key]);
   const pendingHash = useRef<string | null>(null);
 
   // Body carries the tokens too, so portalled dialogs and sheets inherit segment colours.
   useIsoLayoutEffect(() => {
     document.body.dataset.seg = segment;
-    document.body.dataset.theme = segment === "business" ? "dark" : "light";
-    document.title = `PayKaro ${segments[segment].label} | Banking, aasani say`;
+    document.body.dataset.theme = route.kind === "segment" && route.key === "business" ? "dark" : "light";
+    document.title = routeTitle(route);
     const icon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
     if (icon) icon.href = `/brand/logo-${segment}.svg`;
-  }, [segment]);
+  }, [key]);
 
   useEffect(() => {
     const hash = pendingHash.current;
@@ -91,7 +82,7 @@ export function SiteProvider({ initialSegment, children }: { initialSegment: Seg
         focusSectionHeading(el);
       }
     }
-  }, [segment, pathname]);
+  }, [key]);
 
   const scrollToSection = useCallback((id: string) => {
     const el = document.getElementById(id);
@@ -103,58 +94,66 @@ export function SiteProvider({ initialSegment, children }: { initialSegment: Seg
     window.history.replaceState(window.history.state, "", url);
   }, []);
 
-  const navigate = useCallback(
-    (key: SegmentKey, hash?: string) => {
-      const url = segmentPath(key) + (hash ? `#${hash}` : "");
-      if (key === segment) {
+  const go = useCallback(
+    (to: Route, hash?: string) => {
+      if (sameRoute(to, route)) {
         if (hash) scrollToSection(hash);
         else scrollToTarget(0);
         return;
       }
       pendingHash.current = hash ?? null;
-      window.history.pushState(null, "", url);
+      window.history.pushState(null, "", routePath(to) + (hash ? `#${hash}` : ""));
       if (!hash) scrollToTarget(0, { immediate: true });
     },
-    [segment, scrollToSection],
+    [route, scrollToSection],
   );
+
+  const navigate = useCallback((k: SegmentKey, hash?: string) => go({ kind: "segment", key: k }, hash), [go]);
 
   const openDialog = useCallback((d: Exclude<DialogState, null>) => setDialog(d), []);
   const closeDialog = useCallback(() => setDialog(null), []);
 
   const pendingDemoFocus = useRef<DemoKey | null>(null);
 
-  const revealDemo = useCallback((key: DemoKey) => {
+  const revealDemo = useCallback((k: DemoKey) => {
     const el = document.getElementById("demo");
     if (el) scrollToTarget(el);
-    document.getElementById(`demo-tab-${key}`)?.focus({ preventScroll: true });
+    document.getElementById(`demo-tab-${k}`)?.focus({ preventScroll: true });
   }, []);
 
   const showDemo = useCallback(
-    (key: DemoKey) => {
-      setDemo(key);
+    (k: DemoKey) => {
+      if (!document.getElementById("demo")) {
+        setDialog(null);
+        go({ kind: "home" }, "demo");
+        return;
+      }
+      setDemo(k);
       if (dialog) {
         // The dialog restores focus and releases its scroll lock on close, so reveal the demo afterwards.
-        pendingDemoFocus.current = key;
+        pendingDemoFocus.current = k;
         setDialog(null);
       } else {
-        requestAnimationFrame(() => revealDemo(key));
+        requestAnimationFrame(() => revealDemo(k));
       }
     },
-    [setDemo, dialog, revealDemo],
+    [setDemo, dialog, revealDemo, go],
   );
 
   /** Called by the dialog when choosing where focus goes on close. */
   const resolveDialogFocus = useCallback(() => {
-    const key = pendingDemoFocus.current;
+    const k = pendingDemoFocus.current;
     pendingDemoFocus.current = null;
-    if (!key) return true;
-    requestAnimationFrame(() => revealDemo(key));
+    if (!k) return true;
+    requestAnimationFrame(() => revealDemo(k));
     return false;
   }, [revealDemo]);
 
   const value = useMemo(
     () => ({
+      route,
       segment,
+      go,
       navigate,
       scrollToSection,
       dialog,
@@ -165,7 +164,8 @@ export function SiteProvider({ initialSegment, children }: { initialSegment: Seg
       showDemo,
       resolveDialogFocus,
     }),
-    [segment, navigate, scrollToSection, dialog, openDialog, closeDialog, demo, setDemo, showDemo, resolveDialogFocus],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [key, segment, go, navigate, scrollToSection, dialog, openDialog, closeDialog, demo, setDemo, showDemo, resolveDialogFocus],
   );
 
   return <SiteContext.Provider value={value}>{children}</SiteContext.Provider>;

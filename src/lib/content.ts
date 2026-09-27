@@ -23,7 +23,7 @@ export function isSegmentKey(value: string | undefined | null): value is Segment
 }
 
 export function segmentPath(key: SegmentKey) {
-  return key === "personal" ? "/" : `/${key}`;
+  return `/${key}`;
 }
 
 export interface Service {

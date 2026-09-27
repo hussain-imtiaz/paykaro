@@ -10,7 +10,8 @@ import { scrollToTarget } from "@/lib/smooth-scroll";
 import { cn } from "@/lib/utils";
 import { Appear, Counter, ScrollDrift, ScrubHeadline, useSectionZoom } from "./motion";
 import { ParticleSphere } from "./particle-sphere";
-import { ArrowAction, Container, DividerCta, icons, PillButton, SegmentLink, serviceIcons } from "./primitives";
+import { ABOUT_KEYS, HOME, aboutPages } from "@/lib/routes";
+import { ArrowAction, Container, DividerCta, icons, PillButton, RouteLink, SegmentLink, serviceIcons } from "./primitives";
 import { SheetSection } from "./sheet";
 import { useSite } from "./site-context";
 
@@ -336,13 +337,25 @@ function DashboardConcept({ label }: { label: string }) {
 }
 
 export function SiteFooter() {
-  const { openDialog, scrollToSection } = useSite();
+  const { openDialog } = useSite();
   const link = "text-left text-[14px] text-ink hover:text-seg-ink";
   const head = "text-[14px] text-faint-ink";
   return (
     <footer className="relative bg-paper">
       <div className="mx-auto max-w-[1580px] px-4 pt-16 pb-[60px] min-[810px]:px-10 min-[810px]:pt-[140px] min-[810px]:pb-[100px]">
-        <div className="grid grid-cols-2 gap-12 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-12 lg:grid-cols-5">
+          <div>
+            <p className={head}>About Us</p>
+            <ul className="mt-6 space-y-2.5">
+              {ABOUT_KEYS.map((k) => (
+                <li key={k}>
+                  <RouteLink to={{ kind: "about", key: k }} className={link}>
+                    {aboutPages[k].menuLabel}
+                  </RouteLink>
+                </li>
+              ))}
+            </ul>
+          </div>
           <div>
             <p className={head}>Banking for you</p>
             <ul className="mt-6 space-y-2.5">
@@ -371,14 +384,14 @@ export function SiteFooter() {
             <p className={head}>Help</p>
             <ul className="mt-6 space-y-2.5">
               <li>
-                <button type="button" className={link} onClick={() => scrollToSection("faq")}>
+                <RouteLink to={HOME} hash="faq" className={link}>
                   FAQ
-                </button>
+                </RouteLink>
               </li>
               <li>
-                <button type="button" className={link} onClick={() => scrollToSection("safety")}>
+                <RouteLink to={HOME} hash="safety" className={link}>
                   Safety &amp; confidence
-                </button>
+                </RouteLink>
               </li>
               {(
                 [
@@ -426,6 +439,7 @@ export function SiteFooter() {
               illustrative concepts.
             </p>
             <p>This website does not open accounts, process payments or collect banking details.</p>
+            <p>1LINK and Raast logos are trademarks of their owners, shown only to name the payment rails PayKaro’s services use.</p>
             <p>© {new Date().getFullYear()} PayKaro. All rights reserved.</p>
           </div>
           <div>

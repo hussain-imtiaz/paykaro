@@ -1,21 +1,23 @@
 "use client";
 
 import Image from "next/image";
-import { Fragment } from "react";
 import { PaykaroLogo } from "@/components/brand/paykaro-logo";
-import { SERVICE_ORDER, segments, services, type DemoKey } from "@/lib/content";
+import { SEGMENT_KEYS, SERVICE_ORDER, segments, services, type SegmentKey, type ServiceKey } from "@/lib/content";
 import { serviceFigure } from "@/lib/sections-content";
 import { cn } from "@/lib/utils";
 import { Appear } from "./motion";
 import { ParticleSphere } from "./particle-sphere";
-import { ArrowAction, ArrowUpRight, Container, icons, serviceIcons } from "./primitives";
+import { PartnerLogo, type PartnerKey } from "./partner-logo";
+import { ArrowAction, ArrowUpRight, Container, icons, SegmentLink, serviceIcons } from "./primitives";
 import { SheetSection } from "./sheet";
 import { useSite } from "./site-context";
 
 const card = "relative overflow-hidden rounded-[var(--radius-card)] bg-card p-6 min-[810px]:p-[52px]";
 
+const railsFor: Partial<Record<ServiceKey, PartnerKey[]>> = { transfer: ["1link"], bills: ["raast", "1link"], qr: ["raast"] };
+
 export function Intro() {
-  const { segment, openDialog, showDemo } = useSite();
+  const { segment, openDialog } = useSite();
   const s = segments[segment];
   const [a, b, c] = s.products;
   const fa = serviceFigure[a];
@@ -25,7 +27,7 @@ export function Intro() {
   const IconC = serviceIcons[c];
 
   return (
-    <SheetSection id="services" tone="paper" above="clear" below="night" roundTop roundBottom raised labelledBy="ways-title">
+    <SheetSection id="services" tone="paper" above="clear" below="night" roundTop roundBottom raised labelledBy="segments-title">
       <Container className="pt-5 pb-[60px] min-[810px]:pt-[100px] min-[810px]:pb-[200px]">
         <h2 className="sr-only">{s.label} services</h2>
         <div className="grid gap-5 lg:grid-cols-3">
@@ -48,13 +50,21 @@ export function Intro() {
               </button>
             </div>
             <div>
-              <div className="flex items-start justify-between">
-                <Appear y={20} delay={0.15}>
-                  <p className="font-num text-[72px] leading-[0.9] tracking-[-0.03em] min-[810px]:text-[98px]">{fb.figure}</p>
+              {railsFor[b] ? (
+                <Appear y={20} delay={0.15} className="flex items-end gap-4">
+                  {railsFor[b]!.map((r) => (
+                    <PartnerLogo key={r} partner={r} className="h-[84px] min-[810px]:h-[112px]" />
+                  ))}
                 </Appear>
-                <p className="font-num text-[36px] leading-[0.9] font-medium tracking-[-0.03em] text-seg-ink min-[810px]:text-[48px]">{fb.suffix}</p>
-              </div>
-              <p className="mt-1 text-[18px] min-[810px]:text-[21px]">{fb.label}</p>
+              ) : (
+                <div className="flex items-start justify-between">
+                  <Appear y={20} delay={0.15}>
+                    <p className="font-num text-[72px] leading-[0.9] tracking-[-0.03em] min-[810px]:text-[98px]">{fb.figure}</p>
+                  </Appear>
+                  <p className="font-num text-[36px] leading-[0.9] font-medium tracking-[-0.03em] text-seg-ink min-[810px]:text-[48px]">{fb.suffix}</p>
+                </div>
+              )}
+              <p className="mt-3 text-[18px] min-[810px]:text-[21px]">{fb.label}</p>
             </div>
             <p className="mt-auto max-w-[300px] text-[16px] leading-[1.15] min-[810px]:text-[18px]">{fb.copy}</p>
           </Appear>
@@ -120,7 +130,7 @@ export function Intro() {
           </Appear>
         </div>
 
-        <Ways onDemo={showDemo} />
+        <SegmentList />
       </Container>
     </SheetSection>
   );
@@ -143,8 +153,8 @@ function ServiceGraph() {
       <ul className="grid grid-cols-4 gap-2.5">
         {tiles.map((t) => {
           const Icon = t.key in services ? serviceIcons[t.key as keyof typeof serviceIcons] : null;
-          const label = t.key === "1link" ? "1LINK" : t.key === "raast" ? "Raast" : services[t.key as keyof typeof services].short;
-          const inner = Icon ? <Icon className="size-5" strokeWidth={1.75} aria-hidden="true" /> : <span className="font-num text-[13px] font-medium">{label}</span>;
+          const label = t.key === "1link" || t.key === "raast" ? "" : services[t.key as keyof typeof services].short;
+          const inner = Icon ? <Icon className="size-5" strokeWidth={1.75} aria-hidden="true" /> : null;
           return (
             <li key={t.key}>
               {Icon ? (
@@ -162,8 +172,8 @@ function ServiceGraph() {
                   {inner}
                 </button>
               ) : (
-                <span className="flex size-12 items-center justify-center rounded-[10px] min-[810px]:size-[52px]" style={{ background: t.bg, color: t.fg }}>
-                  {inner}
+                <span className="flex size-12 items-center justify-center rounded-[10px] bg-white p-1.5 ring-1 ring-line min-[810px]:size-[52px]">
+                  <PartnerLogo partner={t.key as PartnerKey} />
                 </span>
               )}
             </li>
@@ -182,60 +192,76 @@ function ServiceGraph() {
   );
 }
 
-function Ways({ onDemo }: { onDemo: (k: DemoKey) => void }) {
-  const { segment, openDialog } = useSite();
-  const s = segments[segment];
-  const rules = ["var(--seg)", "#191e30", "var(--seg-ink)"];
+/** Each row wears its own segment's colours; the logo sits on a tile in its approved treatment. */
+const rowColour: Record<SegmentKey, { bg: string; fg: string; sub: string; tile: string }> = {
+  personal: { bg: "#f16557", fg: "#171717", sub: "rgba(23,23,23,0.75)", tile: "#ffffff" },
+  business: { bg: "#1c1c1f", fg: "#ffffff", sub: "rgba(255,255,255,0.7)", tile: "#1c1c1f" },
+  family: { bg: "#0663bd", fg: "#ffffff", sub: "rgba(255,255,255,0.8)", tile: "#ffffff" },
+  agri: { bg: "#00d164", fg: "#191e30", sub: "rgba(25,30,48,0.78)", tile: "#ffffff" },
+  assisted: { bg: "#ffc409", fg: "#191e30", sub: "rgba(25,30,48,0.78)", tile: "#ffffff" },
+};
+
+function SegmentList() {
   return (
-    <div className="pt-[37px] min-[810px]:pt-[152px]">
+    <div id="segments" className="scroll-mt-10 pt-[60px] min-[810px]:pt-[152px]">
       <Appear>
-        <h2 id="ways-title" className="mx-auto max-w-[1040px] text-center text-[36px] leading-[0.95] font-medium tracking-[-0.01em] min-[810px]:text-[80px]">
-          Three ways in. Pick the one that is yours.
+        <h2 id="segments-title" className="mx-auto max-w-[1040px] text-center text-[36px] leading-[0.95] font-medium tracking-[-0.01em] min-[810px]:text-[80px]">
+          Five ways in. Pick the one that is yours.
         </h2>
+        <p className="mx-auto mt-6 max-w-[560px] text-center text-[16px] leading-[1.25] text-muted-ink min-[810px]:text-[18px]">
+          PayKaro is organised around the people it serves. Each segment has its own page, journeys and services.
+        </p>
       </Appear>
-      <div className="mt-[60px] grid gap-5 min-[810px]:mt-[100px] lg:grid-cols-3 lg:px-10">
-        {s.journeys.map((j, i) => {
-          const demoKey = j.services.find((k): k is DemoKey => ["transfer", "bills", "qr", "atm"].includes(k));
+      <ul className="mt-[48px] space-y-3 min-[810px]:mt-[80px] lg:px-10">
+        {SEGMENT_KEYS.map((k, i) => {
+          const s = segments[k];
+          const c = rowColour[k];
           return (
-            <Appear key={j.id} delay={i * 0.06} as="article" id={j.id} className="scroll-mt-24">
-              <div className="flex h-full flex-col rounded-[var(--radius-card)] bg-card p-6 min-[810px]:p-8 lg:min-h-[472px]">
-                <div className="flex items-center gap-3">
-                  <PaykaroLogo decorative className="w-[46px]" />
-                  <p className="font-heading text-[19px] leading-[0.95] font-semibold tracking-[-0.01em] uppercase">
-                    {j.nav.split(" & ").map((w, n, arr) => (
-                      <Fragment key={w}>
-                        {w}
-                        {n < arr.length - 1 && " &"}
-                        <br />
-                      </Fragment>
+            <Appear key={k} as="li" delay={i * 0.05} y={30}>
+              <SegmentLink
+                segment={k}
+                data-seg={k}
+                aria-label={`PayKaro ${s.label}: ${s.cardDescription}`}
+                className="group relative grid overflow-hidden rounded-[var(--radius-card)] p-6 transition-[padding] duration-500 ease-[cubic-bezier(0.44,0,0.56,1)] min-[810px]:grid-cols-[88px_minmax(0,1fr)_minmax(0,1.1fr)_auto] min-[810px]:items-center min-[810px]:gap-8 min-[810px]:px-10 min-[810px]:py-9 lg:hover:py-12"
+                style={{ background: c.bg, color: c.fg }}
+              >
+                <span className="flex size-[64px] items-center justify-center rounded-2xl min-[810px]:size-[88px]" style={{ background: c.tile }}>
+                  <PaykaroLogo decorative className="w-[44px] min-[810px]:w-[60px]" />
+                </span>
+                <span className="mt-5 block min-[810px]:mt-0">
+                  <span className="block text-[40px] leading-[0.9] font-medium tracking-[-0.02em] min-[810px]:text-[64px]">{s.label}</span>
+                  <span className="mt-2 block text-[15px] font-medium" style={{ color: c.sub }}>
+                    {s.menuTitle}
+                  </span>
+                </span>
+                <span className="mt-4 block min-[810px]:mt-0">
+                  <span className="block max-w-[460px] font-ui text-[16px] leading-[1.2]">{s.cardDescription}</span>
+                  <span className="mt-3 flex flex-wrap gap-1.5">
+                    {s.journeys.map((j) => (
+                      <span key={j.id} className="rounded-full border px-3 py-1 text-[13px]" style={{ borderColor: c.sub }}>
+                        {j.nav}
+                      </span>
                     ))}
-                  </p>
-                </div>
-                <h3 className="sr-only">{j.nav}</h3>
-                <p className="mt-10 font-ui text-[16px] leading-[1.15] text-muted-ink lg:mt-auto">{j.copy}</p>
-                <ul className="mt-6 space-y-1.5">
-                  {j.services.map((k) => (
-                    <li key={k}>
-                      <ArrowAction onClick={() => openDialog({ type: "service", key: k })}>{services[k].short}</ArrowAction>
-                    </li>
-                  ))}
-                  {demoKey && (
-                    <li>
-                      <ArrowAction onClick={() => onDemo(demoKey)}>See how it works</ArrowAction>
-                    </li>
-                  )}
-                  {j.partner && (
-                    <li>
-                      <ArrowAction onClick={() => openDialog({ type: "info", key: "retail" })}>Retail partnerships</ArrowAction>
-                    </li>
-                  )}
-                </ul>
-                <span className="mt-6 h-[2px] w-full rounded-full" style={{ background: rules[i] }} aria-hidden="true" />
-              </div>
+                  </span>
+                </span>
+                <span className="mt-6 flex items-center gap-3 min-[810px]:mt-0">
+                  <span className="font-num text-[56px] leading-none opacity-40 max-[809px]:hidden" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="flex size-12 items-center justify-center rounded-full border transition-transform duration-500 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:rotate-45"
+                    style={{ borderColor: c.fg }}
+                  >
+                    <ArrowUpRight className="size-5" strokeWidth={1.75} />
+                  </span>
+                  <span className="text-[15px] font-medium min-[810px]:hidden">Explore {s.label}</span>
+                </span>
+              </SegmentLink>
             </Appear>
           );
         })}
-      </div>
+      </ul>
     </div>
   );
 }

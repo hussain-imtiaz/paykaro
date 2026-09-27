@@ -8,6 +8,7 @@ import { segments } from "@/lib/content";
 import { metrics, networkFeatures, networkNotices, principles } from "@/lib/sections-content";
 import { Appear, Counter, ScrubHeadline, SPRING, WordReveal } from "./motion";
 import { ArrowAction, Container, DividerCta, icons, PillButton } from "./primitives";
+import { PartnerLogo } from "./partner-logo";
 import { SheetSection } from "./sheet";
 import { useSite } from "./site-context";
 
@@ -200,9 +201,15 @@ export function Story() {
           <ul className="grid grid-cols-1 gap-y-16 sm:grid-cols-2 lg:grid-cols-4">
             {metrics.map((m, i) => (
               <Appear key={m.label} as="li" y={40} delay={i >= 2 ? 0.1 : 0} className="px-4 text-center lg:border-l lg:border-line lg:first:border-l-0">
-                <p className="text-[56px] leading-[1.4] font-medium tracking-[-0.02em]">
-                  {m.value === null ? m.text : <Counter value={m.value} />}
-                </p>
+                {m.value === null ? (
+                  <p className="flex h-[78px] items-center justify-center">
+                    <PartnerLogo partner="1link" className="h-[60px]" />
+                  </p>
+                ) : (
+                  <p className="text-[56px] leading-[1.4] font-medium tracking-[-0.02em]">
+                    <Counter value={m.value} />
+                  </p>
+                )}
                 <p className="text-[14px]">{m.label}</p>
                 <p className="mt-1 text-[13px] text-faint-ink">{m.sub}</p>
               </Appear>

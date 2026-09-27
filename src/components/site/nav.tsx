@@ -5,24 +5,28 @@ import { motion, useMotionValueEvent, useReducedMotion, useScroll } from "motion
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PaykaroLogo } from "@/components/brand/paykaro-logo";
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { SEGMENT_KEYS, segmentPath, segments, services, type SegmentKey } from "@/lib/content";
+import { SEGMENT_KEYS, segments, services, type SegmentKey } from "@/lib/content";
+import { ABOUT_KEYS, HOME, aboutPages, aboutPath, routePath, type Route } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { useSite } from "./site-context";
-import { ChevronDown, PillButton, SegmentLink } from "./primitives";
+import { ChevronDown, PillButton, RouteLink, SegmentLink } from "./primitives";
 
 const DESKTOP = "(min-width: 1024px)";
+type NavKey = SegmentKey | "about";
+const NAV_KEYS: NavKey[] = [...SEGMENT_KEYS, "about"];
 
 export function DesktopNav() {
-  const { segment, openDialog } = useSite();
-  const [openKey, setOpenKey] = useState<SegmentKey | null>(null);
-  const openRef = useRef<SegmentKey | null>(null);
+  const { route, openDialog } = useSite();
+  const [openKey, setOpenKey] = useState<NavKey | null>(null);
+  const openRef = useRef<NavKey | null>(null);
   const timer = useRef<number | undefined>(undefined);
-  const triggers = useRef<Partial<Record<SegmentKey, HTMLAnchorElement | null>>>({});
+  const triggers = useRef<Partial<Record<NavKey, HTMLElement | null>>>({});
   const suppressFocusOpen = useRef(false);
   const navRef = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
+  const current: NavKey | null = route.kind === "segment" ? route.key : route.kind === "about" ? "about" : null;
 
-  const open = useCallback((k: SegmentKey) => {
+  const open = useCallback((k: NavKey) => {
     window.clearTimeout(timer.current);
     openRef.current = k;
     setOpenKey(k);
@@ -52,6 +56,40 @@ export function DesktopNav() {
     };
   }, [close]);
 
+  const register = useCallback((key: NavKey, el: HTMLElement | null) => {
+    triggers.current[key] = el;
+  }, []);
+  const onTriggerFocus = useCallback(
+    (key: NavKey) => {
+      if (!suppressFocusOpen.current && window.matchMedia(DESKTOP).matches) open(key);
+    },
+    [open],
+  );
+  const onTriggerKey = useCallback(
+    (e: React.KeyboardEvent, key: NavKey) => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        open(key);
+        requestAnimationFrame(() => document.querySelector<HTMLElement>(`#menu-${key} a, #menu-${key} button`)?.focus());
+      } else if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+        e.preventDefault();
+        const i = NAV_KEYS.indexOf(key);
+        const next = NAV_KEYS[(i + (e.key === "ArrowRight" ? 1 : -1) + NAV_KEYS.length) % NAV_KEYS.length];
+        triggers.current[next]?.focus();
+      }
+    },
+    [open],
+  );
+
+  const label = (key: NavKey, text: string) => (
+    <>
+      <span className={cn(key === current && "underline decoration-seg decoration-2 underline-offset-[6px]")}>{text}</span>
+      <ChevronDown aria-hidden="true" strokeWidth={1.75} className={cn("size-3.5 transition-transform duration-300", openKey === key && "rotate-180")} />
+    </>
+  );
+  const triggerClass = (key: NavKey) =>
+    cn("flex h-[68px] items-center gap-1 rounded-md transition-opacity duration-200", key === current ? "opacity-100" : "opacity-80 hover:opacity-100");
+
   return (
     <motion.nav
       ref={navRef}
@@ -68,59 +106,52 @@ export function DesktopNav() {
         if (!e.currentTarget.contains(e.relatedTarget as Node)) close();
       }}
     >
-      <SegmentLink segment={segment} aria-label={`PayKaro ${segments[segment].label} home`} className="shrink-0 rounded-md">
+      <RouteLink to={HOME} aria-label="PayKaro home" className="shrink-0 rounded-md">
         <PaykaroLogo decorative className="w-[46px]" />
-      </SegmentLink>
+      </RouteLink>
 
-      <ul className="mx-auto flex items-center gap-[clamp(24px,6vw,110px)] font-nav text-[14px]">
-        {SEGMENT_KEYS.map((key, i) => (
+      <ul className="mx-auto flex items-center gap-[clamp(20px,4.2vw,84px)] font-nav text-[14px]">
+        {SEGMENT_KEYS.map((key) => (
           <li key={key} className="relative" data-seg={key}>
             <SegmentLink
               segment={key}
-              ref={(el) => {
-                triggers.current[key] = el;
-              }}
-              aria-current={key === segment ? "page" : undefined}
+              ref={(el) => register(key, el)}
               aria-expanded={openKey === key}
               aria-controls={`menu-${key}`}
               data-trigger={key}
-              className={cn(
-                "flex h-[68px] items-center gap-1 rounded-md transition-opacity duration-200",
-                key === segment ? "opacity-100" : "opacity-80 hover:opacity-100",
-              )}
-              onNavigate={() => close()}
               onPointerEnter={(e) => {
                 if (e.pointerType === "mouse") open(key);
               }}
-              onFocus={() => {
-                if (!suppressFocusOpen.current && window.matchMedia(DESKTOP).matches) open(key);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "ArrowDown") {
-                  e.preventDefault();
-                  open(key);
-                  requestAnimationFrame(() =>
-                    document.querySelector<HTMLElement>(`#menu-${key} a, #menu-${key} button`)?.focus(),
-                  );
-                } else if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
-                  e.preventDefault();
-                  const next = SEGMENT_KEYS[(i + (e.key === "ArrowRight" ? 1 : -1) + 5) % 5];
-                  triggers.current[next]?.focus();
-                }
-              }}
+              onFocus={() => onTriggerFocus(key)}
+              onKeyDown={(e) => onTriggerKey(e, key)}
+              aria-current={key === current ? "page" : undefined}
+              className={triggerClass(key)}
+              onNavigate={() => close()}
             >
-              <span className={cn(key === segment && "underline decoration-seg decoration-2 underline-offset-[6px]")}>
-                {segments[key].label}
-              </span>
-              <ChevronDown
-                aria-hidden="true"
-                strokeWidth={1.75}
-                className={cn("size-3.5 transition-transform duration-300", openKey === key && "rotate-180")}
-              />
+              {label(key, segments[key].label)}
             </SegmentLink>
-            {openKey === key && <Dropdown segmentKey={key} onClose={close} />}
+            {openKey === key && <SegmentMenu segmentKey={key} onClose={close} />}
           </li>
         ))}
+        <li className="relative" data-seg="personal">
+          <button
+            type="button"
+            ref={(el) => register("about", el)}
+            aria-expanded={openKey === "about"}
+            aria-controls="menu-about"
+            data-trigger="about"
+            onPointerEnter={(e) => {
+              if (e.pointerType === "mouse") open("about");
+            }}
+            onFocus={() => onTriggerFocus("about")}
+            onKeyDown={(e) => onTriggerKey(e, "about")}
+            className={triggerClass("about")}
+            onClick={() => (openKey === "about" ? close() : open("about"))}
+          >
+            {label("about", "About Us")}
+          </button>
+          {openKey === "about" && <AboutMenu onClose={close} />}
+        </li>
       </ul>
 
       <div className="flex shrink-0 items-center gap-2">
@@ -137,23 +168,31 @@ export function DesktopNav() {
   );
 }
 
-function Dropdown({ segmentKey, onClose }: { segmentKey: SegmentKey; onClose: (returnFocus?: boolean) => void }) {
+const menuMotion = {
+  initial: { opacity: 0, y: -6, scale: 0.98 },
+  animate: { opacity: 1, y: 0, scale: 1 },
+  transition: { type: "spring", bounce: 0.2, duration: 0.35 },
+} as const;
+
+function menuKeys(onClose: (returnFocus?: boolean) => void) {
+  return (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      e.stopPropagation();
+      onClose(true);
+    }
+  };
+}
+
+function SegmentMenu({ segmentKey, onClose }: { segmentKey: SegmentKey; onClose: (returnFocus?: boolean) => void }) {
   const { openDialog, navigate } = useSite();
   const s = segments[segmentKey];
   return (
     <motion.div
       id={`menu-${segmentKey}`}
-      initial={{ opacity: 0, y: -6, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ type: "spring", bounce: 0.2, duration: 0.35 }}
+      {...menuMotion}
       className="absolute top-[58px] left-1/2 w-[620px] -translate-x-1/2 rounded-xl border border-white/10 bg-night/95 p-5 text-white shadow-2xl backdrop-blur-md"
       style={{ originY: 0 }}
-      onKeyDown={(e) => {
-        if (e.key === "Escape") {
-          e.stopPropagation();
-          onClose(true);
-        }
-      }}
+      onKeyDown={menuKeys(onClose)}
     >
       <div className="flex items-center gap-3">
         <PaykaroLogo decorative className="w-[40px]" />
@@ -166,7 +205,7 @@ function Dropdown({ segmentKey, onClose }: { segmentKey: SegmentKey; onClose: (r
             <ul className="mt-3 space-y-2 text-[14px]">
               <li>
                 <a
-                  href={`${segmentPath(segmentKey)}#${j.id}`}
+                  href={`/${segmentKey}#${j.id}`}
                   className="text-white hover:text-seg-bright"
                   onClick={(e) => {
                     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -200,9 +239,55 @@ function Dropdown({ segmentKey, onClose }: { segmentKey: SegmentKey; onClose: (r
   );
 }
 
+function AboutMenu({ onClose }: { onClose: (returnFocus?: boolean) => void }) {
+  const { route } = useSite();
+  return (
+    <motion.div
+      id="menu-about"
+      {...menuMotion}
+      className="absolute top-[58px] right-0 w-[380px] rounded-xl border border-white/10 bg-night/95 p-2 text-white shadow-2xl backdrop-blur-md"
+      style={{ originY: 0 }}
+      onKeyDown={menuKeys(onClose)}
+    >
+      <ul>
+        {ABOUT_KEYS.map((k) => {
+          const active = route.kind === "about" && route.key === k;
+          return (
+            <li key={k}>
+              <RouteLink
+                to={{ kind: "about", key: k }}
+                aria-current={active ? "page" : undefined}
+                onNavigate={() => onClose()}
+                className="group flex flex-col rounded-lg px-4 py-3 transition-colors hover:bg-white/[0.06] focus-visible:bg-white/[0.06]"
+              >
+                <span className={cn("text-[15px] font-medium", active && "text-seg-bright")}>{aboutPages[k].menuLabel}</span>
+                <span className="mt-0.5 text-[13px] leading-[1.25] text-white/60">{aboutPages[k].description}</span>
+              </RouteLink>
+            </li>
+          );
+        })}
+      </ul>
+    </motion.div>
+  );
+}
+
+function contextLinks(route: Route): { label: string; to: Route; hash?: string }[] {
+  if (route.kind === "segment") {
+    const s = segments[route.key];
+    return s.journeys.map((j) => ({ label: j.menuLabel, to: route, hash: j.id }));
+  }
+  if (route.kind === "about") return [];
+  return [
+    { label: "Our services", to: HOME, hash: "services" },
+    { label: "Choose your PayKaro", to: HOME, hash: "segments" },
+    { label: "Try the app concept", to: HOME, hash: "demo" },
+    { label: "FAQ", to: HOME, hash: "faq" },
+  ];
+}
+
 /** Fixed mobile bar that hides while scrolling down and returns on scroll up. */
 export function MobileNav() {
-  const { segment, navigate, openDialog } = useSite();
+  const { route, segment, go, openDialog } = useSite();
   const reduce = useReducedMotion();
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
@@ -217,17 +302,22 @@ export function MobileNav() {
     else if (y < prev - 2) setHidden(false);
   });
 
-  const go = (k: SegmentKey, hash?: string) => {
+  const goTo = (to: Route, hash?: string) => {
     skipReturn.current = true;
     setOpen(false);
-    navigate(k, hash);
+    go(to, hash);
   };
   const action = (fn: () => void) => {
     skipReturn.current = true;
     setOpen(false);
     fn();
   };
-  const s = segments[segment];
+  const links = contextLinks(route);
+  const contextName = route.kind === "segment" ? segments[route.key].label : "PayKaro";
+  const linkClick = (to: Route, hash?: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    goTo(to, hash);
+  };
 
   return (
     <motion.header
@@ -238,9 +328,9 @@ export function MobileNav() {
       animate={{ y: hidden && !open ? "-100%" : "0%" }}
       transition={reduce ? { duration: 0 } : { duration: 0.4, ease: [0.44, 0, 0.56, 1] }}
     >
-      <SegmentLink segment={segment} aria-label={`PayKaro ${s.label} home`} className="rounded-md">
+      <RouteLink to={HOME} aria-label="PayKaro home" className="rounded-md">
         <PaykaroLogo decorative className="w-[42px]" />
-      </SegmentLink>
+      </RouteLink>
       <Sheet
         open={open}
         onOpenChange={(v) => {
@@ -267,45 +357,55 @@ export function MobileNav() {
           </div>
           <nav aria-label="Segments" className="px-4 pt-4">
             <ul className="divide-y divide-line border-y border-line">
-              {SEGMENT_KEYS.map((k) => (
-                <li key={k} data-seg={k}>
+              {SEGMENT_KEYS.map((k) => {
+                const active = route.kind === "segment" && route.key === k;
+                return (
+                  <li key={k} data-seg={k}>
+                    <a
+                      href={`/${k}`}
+                      aria-current={active ? "page" : undefined}
+                      className="flex items-center justify-between py-4 font-heading text-[28px] leading-none font-medium"
+                      onClick={linkClick({ kind: "segment", key: k })}
+                    >
+                      {segments[k].label}
+                      <span className={cn("size-3 rounded-full bg-seg", !active && "opacity-30")} aria-hidden="true" />
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+          <nav aria-label="About Us" className="px-4 pt-8">
+            <p className="text-[13px] text-faint-ink">About Us</p>
+            <ul className="mt-3 space-y-3 text-[17px]">
+              {ABOUT_KEYS.map((k) => (
+                <li key={k}>
                   <a
-                    href={segmentPath(k)}
-                    aria-current={k === segment ? "page" : undefined}
-                    className="flex items-center justify-between py-4 font-heading text-[28px] leading-none font-medium"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      go(k);
-                    }}
+                    href={aboutPath(k)}
+                    aria-current={route.kind === "about" && route.key === k ? "page" : undefined}
+                    className="hover:text-seg-ink aria-[current=page]:text-seg-ink"
+                    onClick={linkClick({ kind: "about", key: k })}
                   >
-                    {segments[k].label}
-                    <span className={cn("size-3 rounded-full bg-seg", k !== segment && "opacity-30")} aria-hidden="true" />
+                    {aboutPages[k].menuLabel}
                   </a>
                 </li>
               ))}
             </ul>
           </nav>
-          <div className="px-4 pt-8">
-            <p className="text-[13px] text-faint-ink">In {s.label}</p>
-            <ul className="mt-3 space-y-3 text-[17px]">
-              {[...s.journeys.map((j) => [j.id, j.menuLabel] as const), ["demo", "Try the app concept"] as const, ["faq", "FAQ"] as const].map(
-                ([hash, label]) => (
-                  <li key={hash}>
-                    <a
-                      href={`${segmentPath(segment)}#${hash}`}
-                      className="hover:text-seg-ink"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        go(segment, hash);
-                      }}
-                    >
-                      {label}
+          {links.length > 0 && (
+            <div className="px-4 pt-8" data-seg={segment}>
+              <p className="text-[13px] text-faint-ink">On this page · {contextName}</p>
+              <ul className="mt-3 space-y-3 text-[17px]">
+                {links.map((l) => (
+                  <li key={l.label}>
+                    <a href={routePath(l.to) + (l.hash ? `#${l.hash}` : "")} className="hover:text-seg-ink" onClick={linkClick(l.to, l.hash)}>
+                      {l.label}
                     </a>
                   </li>
-                ),
-              )}
-            </ul>
-          </div>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="mt-auto flex gap-3 p-4 pt-10">
             <PillButton label="Get started" size="lg" className="flex-1" onClick={() => action(() => openDialog({ type: "info", key: "onboarding" }))} />
             <PillButton label="Login" variant="outline" size="lg" className="flex-1" onClick={() => action(() => openDialog({ type: "info", key: "login" }))} />

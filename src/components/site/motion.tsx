@@ -140,6 +140,33 @@ export function WordReveal({ text, className, as = "h3" }: { text: string; class
   );
 }
 
+/** Words brighten one by one as the block scrolls through the viewport, as on the reference's story page. */
+export function ScrollHighlight({ text, className }: { text: string; className?: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const reduce = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "end 0.45"] });
+  const words = text.split(" ");
+  if (reduce) return <p className={className}>{text}</p>;
+  return (
+    <p ref={ref} className={className} aria-label={text}>
+      {words.map((w, i) => (
+        <HighlightWord key={`${w}-${i}`} progress={scrollYProgress} range={[i / words.length, (i + 1) / words.length]}>
+          {w}
+        </HighlightWord>
+      ))}
+    </p>
+  );
+}
+
+function HighlightWord({ children, progress, range }: { children: string; progress: MotionValue<number>; range: [number, number] }) {
+  const opacity = useTransform(progress, range, [0.22, 1]);
+  return (
+    <motion.span aria-hidden="true" style={{ opacity }}>
+      {children}{" "}
+    </motion.span>
+  );
+}
+
 /** Counts up from 0 when it enters the viewport. */
 export function Counter({ value, className }: { value: number; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
