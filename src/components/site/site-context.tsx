@@ -125,6 +125,7 @@ export function SiteProvider({ initialRoute, children }: { initialRoute: Route; 
     (k: DemoKey) => {
       if (!document.getElementById("demo")) {
         setDialog(null);
+        setDemoChoice({ page: routeKey({ kind: "home" }), key: k });
         go({ kind: "home" }, "demo");
         return;
       }

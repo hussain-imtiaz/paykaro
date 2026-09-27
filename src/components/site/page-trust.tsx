@@ -188,7 +188,7 @@ function RevenueRing() {
   const short = ["Treasury", "Cards", "Acceptance", "Remittance", "Disbursements", "Subscriptions", "Platform", "Distribution"];
   return (
     <figure className="mx-auto w-full max-w-[760px]">
-      <svg viewBox="-100 -10 840 660" className="h-auto w-full" role="img" aria-labelledby="ring-title">
+      <svg viewBox="-130 -20 900 680" className="h-auto w-full" role="img" aria-labelledby="ring-title">
         <title id="ring-title">Everyday money movement at the centre, surrounded by the eight parts of the ecosystem that fund PayKaro</title>
         <defs>
           <radialGradient id="ring-core" cx="50%" cy="50%" r="50%">
@@ -209,20 +209,20 @@ function RevenueRing() {
               <text x={x} y={y + 5} textAnchor="middle" fontSize="15" fill="#fff" fontFamily="var(--font-oswald)">
                 {String(i + 1).padStart(2, "0")}
               </text>
-              <text x={320 + Math.cos(a) * 300} y={320 + Math.sin(a) * 300 + 5} textAnchor="middle" fontSize="15" fill="rgba(255,255,255,0.75)">
+              <text x={320 + Math.cos(a) * 305} y={320 + Math.sin(a) * 305 + 7} textAnchor="middle" fontSize="21" fill="rgba(255,255,255,0.8)">
                 {label}
               </text>
             </g>
           );
         })}
         <circle cx="320" cy="320" r="112" fill="#111" stroke="var(--seg)" strokeWidth="1.5" />
-        <text x="320" y="306" textAnchor="middle" fontSize="19" fill="#fff" fontWeight="500">
+        <text x="320" y="304" textAnchor="middle" fontSize="23" fill="#fff" fontWeight="500">
           Everyday money
         </text>
-        <text x="320" y="330" textAnchor="middle" fontSize="19" fill="#fff" fontWeight="500">
+        <text x="320" y="332" textAnchor="middle" fontSize="23" fill="#fff" fontWeight="500">
           movement
         </text>
-        <text x="320" y="356" textAnchor="middle" fontSize="13" fill="rgba(255,255,255,0.6)">
+        <text x="320" y="360" textAnchor="middle" fontSize="15" fill="rgba(255,255,255,0.65)">
           not monetised through friction
         </text>
       </svg>

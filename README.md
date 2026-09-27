@@ -1,6 +1,6 @@
 # PayKaro website: Option 2 (Ummah structure)
 
-A marketing website for PayKaro, a Pakistani banking and digital-services brand. This is a second design option, separate from the live Option 1 site. Its section order, component design, typography and motion follow [ummah.com](https://www.ummah.com/) closely, while the brand, audiences and service facts stay PayKaro's own.
+A marketing website for PayKaro, a digital financial experience built for Pakistan. This is a second design option, separate from the live Option 1 site. Its section order, component design and typography follow [ummah.com](https://www.ummah.com/) closely. Content, structure, audiences and tone follow the **PayKaro Website & Mobile App Experience Brief** (agency edition).
 
 It is an informational site only. It does not open accounts, log anyone in, process payments or collect personal or banking details.
 
@@ -22,17 +22,19 @@ Requires Node 20+. Google fonts are downloaded at build time by `next/font`; Apf
 
 | URL | Page | Ummah page it is modelled on |
 | --- | --- | --- |
-| `/` | Home: photo hero, bento, the five-segment list, principles, network, story, service tabs, demo, safety, stats, FAQ | [ummah.com](https://www.ummah.com/) |
-| `/personal` | Personal | [/minted](https://www.ummah.com/minted) (consumer money app) |
-| `/business` | Business (dark page) | [/pay/business-account-card](https://www.ummah.com/pay/business-account-card) |
-| `/family` | Family | [/minted/giving](https://www.ummah.com/minted/giving) |
-| `/agri` | Agri | [/pay/fx-and-global-transfers](https://www.ummah.com/pay/fx-and-global-transfers) |
-| `/assisted` | Assisted | [/pay/phone-payments](https://www.ummah.com/pay/phone-payments) |
+| `/` | Home: problem-led hero, problem and promise bento, three pathways, DIGBEX principles, everyday scenarios, why PayKaro, the 16-service universe, "see it before you confirm" + intent demo, trust, Pakistani by design, where to next, FAQ, Money Dashboard concept | [ummah.com](https://www.ummah.com/) |
+| `/individuals` | Individuals | [/minted](https://www.ummah.com/minted) |
+| `/business` | Business / Merchants (dark page) | [/pay/business-account-card](https://www.ummah.com/pay/business-account-card) |
+| `/partners` | Partners / Institutions | [/developers](https://www.ummah.com/developers) |
+| `/app` | The App: intent search, three home concepts, proof, controls, every state, first use, bilingual layouts, device reality | [/pay/payments](https://www.ummah.com/pay/payments) |
+| `/trust` | Security & Trust, incl. how PayKaro is funded and disclosures | [/pay/reconcile](https://www.ummah.com/pay/reconcile) |
+| `/help` | Get Help: intent-led topics, how help works, contact channels, FAQ | [/company/contact-us](https://www.ummah.com/company/contact-us) |
 | `/about/company` | Company | [/company](https://www.ummah.com/company) |
-| `/about/chairmans-message` | Chairman’s Message | [/about](https://www.ummah.com/about) (the “Our story” editorial) |
+| `/about/digbex` | Our Approach: DIGBEX | [/company/careers](https://www.ummah.com/company/careers) |
+| `/about/chairmans-message` | Chairman’s Message | [/about](https://www.ummah.com/about) |
 | `/about/leadership` | Leadership & Board Members | the team section of [/company](https://www.ummah.com/company) |
 
-Each segment page has its own sections and keeps that segment's three journey anchors (for example `/business#collections`), which the nav menus link to.
+`/personal`, `/family`, `/agri` and `/assisted` (the earlier five-segment structure) redirect permanently to `/individuals`.
 
 ## Typography
 
@@ -48,18 +50,20 @@ These are the same typefaces Ummah uses, all freely licensed.
 
 ## Motion
 
-- **Lenis** smooth scroll (1s duration). It is off under `prefers-reduced-motion` and paused while a dialog is open.
-- **motion/react** for everything else, using Ummah's measured values: spring entrances (bounce 0.2, 0.4s), headlines scrubbed from `scale 1.15, y -400px` (-160px on mobile) to rest as the section enters, background zoom from 1.6 to 1, scroll-linked horizontal drift on the wordmark tickers, staggered word reveals, and eased counters.
-- **Segment and About pages** add Ummah's product-page motion: the pinned hero with drifting diagonal light, a phone that rises as its section enters (Personal), a pinned phone whose screen follows the journey in view (Personal), a pinned card fan that opens on scroll (Business), a parallax photo band (Business), and words that brighten as you scroll (Chairman’s Message).
-- **Pill buttons** (68px radius): a dark disc rises from the bottom centre while the label rolls up, over 0.4s with `cubic-bezier(1, .08, .17, .95)`.
-- Under reduced motion, every scrub, zoom, drift, pin and entrance is skipped and content renders in its resting state. The preference is read with `useSyncExternalStore`, so server and client markup match.
+The brief (s7) says motion should signal state, progress or completion, and rules out decorative animation that slows comprehension. That overrides part of Ummah's motion language:
+
+- **Kept from Ummah**: Lenis smooth scroll, pill hover (a dark disc rises while the label rolls, 0.4s `cubic-bezier(1, .08, .17, .95)`), background zoom and wordmark drift, the pinned hero light, the pinned phone on Individuals, the parallax band.
+- **Toned down**: section headlines move `y 48px, scale 1.04` instead of `y -400px, scale 1.15`, so they are legible from their first frame. The hero headline appears after 0.15s instead of 1s. Word-by-word reveals and the scroll-brightened Chairman text are gone.
+- **Motion that carries meaning**: the demo phone shows a spinner while pending and draws a tick on success; the Business card fan now shows a payment's progress (in, confirmed, settled, in your numbers).
+- Film grain is desktop-only, for modest devices. Under reduced motion every scrub, zoom, drift, pin and entrance is skipped; the preference is read with `useSyncExternalStore`, so server and client markup match.
 
 ## What's in it
 
-- **One route, nine pages**: `src/app/[[...slug]]/page.tsx` statically generates every URL above. Moving between pages uses `history.pushState` with no server round-trip, so colours, logo, favicon and title change in the same frame. Back and forward work, and every URL loads directly. Home and About use Personal coral; Business turns the whole page charcoal.
-- **Navigation**: on desktop the nav sits inside each page's hero. Hovering, focusing or pressing Down on a segment opens its menu, clicking it opens its page, and Left/Right move along the bar. **About Us** opens a menu with Company, Chairman’s Message and Leadership & Board Members. On mobile a fixed bar hides on scroll down and opens a full-screen menu with segments, the About Us pages and links for the current page.
-- **Interactive phone demo**: Send money, Pay bills, Raast QR and Cash access, three steps each, inside the numbered accordion. A live region announces each step. No real financial action happens.
-- **Dialogs** for service details, fees, retail partnerships, login, onboarding, accessibility and Urdu guidance. They stand in for destinations that don't exist yet.
+- **One route, eleven pages**: `src/app/[[...slug]]/page.tsx` statically generates every URL above. Moving between pages uses `history.pushState` with no server round-trip. Individuals, the App, Trust, Help and About use PayKaro coral; Business turns the page charcoal; Partners uses the brand blue.
+- **Navigation**: Individuals, Business and Partners menus (on-page anchors plus services), The App, and About Us (Company, Our Approach (DIGBEX), Chairman’s Message, Leadership & Board). Get Help and **Get PayKaro** sit on the right, per the brief's outcome-led calls to action.
+- **Intent-led demo**: four intents (send money, money from abroad, freeze your card, when something goes wrong), each with success, pending, failure or recovery states. The App page adds an intent search that resolves English, Roman Urdu and Urdu to the same action, a working card-freeze control and a states switcher. Nothing real happens and nothing is collected.
+- **Urdu**: set in Noto Nastaliq Urdu (`:lang(ur)`), with a representative bilingual layout on `/app` and an Urdu summary dialog. Urdu copy needs native-language review.
+- **Dialogs** for all 16 services, Get PayKaro, business and partner enquiries, fees, login, accessibility and website information.
 
 ## Project layout
 
@@ -75,43 +79,41 @@ src/lib/about-content.ts          About Us copy and people, with marked placehol
 src/lib/smooth-scroll.ts          Lenis instance and scroll helpers
 src/components/brand/             PayKaro logo (isolated, see below)
 src/components/site/site.tsx      page switch
-src/components/site/page-*.tsx    one file per segment page
-src/components/site/about.tsx     the three About Us pages
+src/components/site/page-*.tsx    Individuals, Business, Partners, App, Trust, Help
+src/components/site/about.tsx     Company, DIGBEX, Chairman, Leadership
+src/components/site/app-concepts.tsx  app-screen concepts (home A/B/C, receipt, controls, merchant)
 src/components/site/blocks.tsx    shared section blocks for those pages
 src/components/site/              nav, heroes, homepage sections, motion primitives, demo, dialogs, context
 src/components/ui/                shadcn/ui primitives (Base UI variant)
-public/brand/                     per-segment logo SVGs (favicons)
-public/partners/                  official 1LINK and Raast logos
+public/brand/                     per-pathway logo SVGs (favicons)
 public/images/                    illustrative photography
 ```
 
 Shared service, segment and journey wording lives in `src/lib/content.ts`. Page-specific copy for the segment pages sits at the top of each `page-*.tsx` file.
 
-## About Us placeholders
+## Placeholders
 
-No company history, people or chairman details have been supplied, so none are invented. Every missing item in `src/lib/about-content.ts` is a `ph(field, hint)` call that renders as a dashed box labelled **To be supplied**, and person cards show an empty portrait frame. To publish, replace each `ph(...)` with the real string, set `photo` to a file under `public/`, and add or remove entries in `leadership` and `board`.
+The brief supplies the brand proposition, core promise, character, local relevance and commercial philosophy, which now fill the Company page. It supplies no company facts, chairman or people, so none are invented. Every missing item in `src/lib/about-content.ts` (company details, chairman, leadership, board, regulatory disclosures, support channels) is a `ph(field, hint)` call that renders as a dashed box labelled **To be supplied**. Replace each with the approved string to publish.
 
 ## Brand tokens
 
-| Segment | Brand | Readable on light | Pill fill / text |
+| Pathway | Brand | Readable on light | Pill fill / text |
 | --- | --- | --- | --- |
-| Personal | #F16557 | #A7220F | #F16557 / #171717 |
+| Individuals (and App, Trust, Help, About) | #F16557 | #A7220F | #F16557 / #171717 |
 | Business | #1C1C1F + #F16557 | #F16557 (dark page) | #F16557 / #171717 |
-| Family | #0283FF | #0663BD | #0663BD / white |
-| Agri | #00D164 | #00652F | #00D164 / #171717 |
-| Assisted | #FFC409 | #795506 | #FFC409 / #171717 |
+| Partners | #0283FF | #0663BD | #0663BD / white |
 
-Following Ummah, buttons are 68px pills, cards use 24px corners and section sheets 32px. Segment colours never transition, so switches are instant.
+Following Ummah, buttons are 68px pills, cards use 24px corners and section sheets 32px.
 
 ## Assets and provenance
 
 - **Logo**: `src/components/brand/wordmark-data.ts` holds the cleaned bilingual "pay کرو" vector from `Paykaro Logo 2.svg`. It was taken from the inline definition on the live Option 1 site, because the original asset folder was not available to this build. Its colours come from `--logo-base` (backing) and `--logo-face` (glyphs). To swap in a newer master export, replace `WORDMARK_GROUP` and `WORDMARK_VIEWBOX` and keep one path filled with `var(--logo-base)` and the glyph group with `var(--logo-face)`. `public/brand/logo-*.svg` are the matching per-segment favicons.
 - **Photos**: `personal.webp`, `business.webp` and `agri.webp` are the illustrative images used on Option 1. The segment pages reuse them with different crops. They are not customer endorsements.
-- **Partner logos**, unmodified, from the owners' own sites. 1LINK: `public/partners/1link.png` from https://1link.net.pk/assets/images/logo.png, and the white `1link-white.png` from https://1link.net.pk/assets/images/footer-main-logo.png. 1link.net.pk publishes no SVG, only these 120 px PNGs. Raast: `public/partners/raast.svg` from https://www.sbp.org.pk/assets/images/raast-logo.svg (State Bank of Pakistan). That file is an SVG wrapper around a 1200 × 1304 PNG. Both marks are third-party trademarks; get written permission from 1LINK and SBP / Raast Payments Pakistan before launch.
+- **No partner logos.** The brief keeps partner names and integration methods internal, so the 1LINK and Raast marks were removed (they are in git history if approval changes).
 
 ## Content rules
 
-Only verified services appear: 1LINK domestic transfers (IBFT), bill payments via 1LINK / Raast, Raast QR at participating merchants, Micro ATM with biometric verification, business cash collection, and the retail-network direction. Micro Takaful is always marked as planned. The site has no rates, fees, customer numbers, testimonials, regulatory claims, or live login or onboarding links.
+Service names and propositions are quoted from the brief's product and service universe, with its qualifiers ("subject to applicable approvals", "through regulated partners", "optional"). Following its information boundary, the site has no partner names, integration methods, limits, pricing, roadmap or launch dates, KYC or biometric logic, customer numbers, testimonials or regulatory claims. App screens are labelled concepts with sample data. No form fields exist outside the service search.
 
 ## Deployment
 

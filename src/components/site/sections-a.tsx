@@ -39,16 +39,16 @@ export function DigbexPrinciples({ compact = false }: { compact?: boolean }) {
             PayKaro designs from what you want to do, not from a product catalogue. Ten principles govern every screen.
           </p>
         </ScrubHeadline>
-        <ul className="mx-auto grid max-w-[1516px] gap-2.5 min-[810px]:mt-[25px] sm:grid-cols-2 lg:grid-cols-5">
+        <ul className="mx-auto grid max-w-[1516px] grid-cols-2 gap-2.5 min-[810px]:mt-[25px] lg:grid-cols-5">
           {digbex.map((p, i) => {
             const Icon = icons[p.icon];
             return (
-              <Appear key={p.title} as="li" delay={(i % 5) * 0.04} className="relative flex min-h-[243px] flex-col rounded-[var(--radius-card)] bg-white/[0.02] p-4 ring-1 ring-white/[0.04] lg:min-h-[300px]">
+              <Appear key={p.title} as="li" delay={(i % 5) * 0.04} className="relative flex min-h-[190px] flex-col rounded-[var(--radius-card)] bg-white/[0.02] p-4 ring-1 ring-white/[0.04] sm:min-h-[243px] lg:min-h-[300px]">
                 <span className="flex size-9 items-center justify-center rounded-full bg-white/10 font-heading text-[16px] font-medium">{i + 1}</span>
-                <span className="flex flex-1 items-center justify-center py-6">
-                  <Icon className="size-[56px]" stroke="url(#seg-icon-grad)" strokeWidth={1.3} aria-hidden="true" />
+                <span className="flex flex-1 items-center justify-center py-4 sm:py-6">
+                  <Icon className="size-10 sm:size-[56px]" stroke="url(#seg-icon-grad)" strokeWidth={1.3} aria-hidden="true" />
                 </span>
-                <h3 className="text-[19px] leading-[1.15] text-white lg:text-center">{p.title}</h3>
+                <h3 className="text-[16px] leading-[1.15] text-white sm:text-[19px] lg:text-center">{p.title}</h3>
                 {!compact && <p className="mt-2 text-[14px] leading-[1.3] text-white/60 lg:text-center">{p.copy}</p>}
               </Appear>
             );
